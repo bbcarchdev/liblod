@@ -14,14 +14,20 @@ lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 	librdf_model *model;	
 	librdf_node *node;
 	librdf_statement *query;
-	
-	lod_reset_(context);
-	context->subject = strdup(uri);
-	if(!context->subject)
-	{	   
+	char *p;
+	int i;
+
+	/* Duplicate the URI first, in case it's actually a string belonging
+	 * to the context itself which would get deallocated by lod_reset_()
+	 */
+	p = strdup(uri);
+	if(!p)
+	{
 		lod_set_error_(context, strerror(errno));
 		return NULL;
-	}
+	}		
+	lod_reset_(context);
+	context->subject = p;
 	world = lod_world(context);
 	if(!world)
 	{
@@ -88,27 +94,39 @@ lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 	{
 		return NULL;
 	}
-	/* Now that we've successfully fetched the URI, Attempt to locate
-	 * triples about the subject (possibly for the second time)
-	 */
-	node = librdf_new_node_from_uri_string(world, (const unsigned char *) context->subject);
-	if(!node)
+	inst = NULL;
+	for(i = 0; i < context->nsubjects; i++)
 	{
-		context->error = 1;
-		return NULL;
-	}		
-	query = librdf_new_statement_from_nodes(world, node, NULL, NULL);
-	/* Note: node becomes owned by the statement, and freed upon error */
-	if(!query)
-	{
-		context->error = 1;
-		return NULL;
-	}
-	inst = lod_instance_create_(context, query, node);
-	if(!inst)
-	{
-		librdf_free_statement(query);
-		return NULL;
+		if(inst)
+		{
+			lod_instance_destroy(inst);
+		}
+		/* Now that we've successfully fetched the URI, Attempt to locate
+		 * triples about the subject (possibly for the second time)
+		 */
+		node = librdf_new_node_from_uri_string(world, (const unsigned char *) context->subjects[i]);
+		if(!node)
+		{
+			context->error = 1;
+			return NULL;
+		}
+		query = librdf_new_statement_from_nodes(world, node, NULL, NULL);
+		/* Note: node becomes owned by the statement, and freed upon error */
+		if(!query)
+		{
+			context->error = 1;
+			return NULL;
+		}
+		inst = lod_instance_create_(context, query, node);
+		if(!inst)
+		{
+			librdf_free_statement(query);
+			return NULL;
+		}
+		if(lod_instance_exists(inst))
+		{
+			break;
+		}
 	}
 	return inst;
 }

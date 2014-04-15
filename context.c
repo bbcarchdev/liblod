@@ -4,6 +4,8 @@
 
 #include "p_liblod.h"
 
+#define MAX_REDIRECTS                   32
+
 /* Create a new LOD context */
 LODCONTEXT *
 lod_create(void)
@@ -15,6 +17,7 @@ lod_create(void)
 	{
 		return NULL;
 	}
+	p->max_redirects = MAX_REDIRECTS;
 	return p;
 }
 
@@ -22,6 +25,7 @@ lod_create(void)
 int
 lod_destroy(LODCONTEXT *context)
 {
+	lod_reset_(context);
 	if(context->model && context->model_alloc)
 	{
 		librdf_free_model(context->model);
@@ -42,10 +46,6 @@ lod_destroy(LODCONTEXT *context)
 	{
 		curl_easy_cleanup(context->ch);
 	}
-	free(context->subject);
-	free(context->document);
-	free(context->errmsg);
-	free(context->buf);
 	free(context);
 	return 0;
 }
@@ -201,7 +201,7 @@ lod_curl(LODCONTEXT *context)
 	context->headers = curl_slist_append(NULL, "Accept: text/turtle;q=0.8, application/rdf+xml;q=0.75, */*;q=0.1");
 	context->headers = curl_slist_append(context->headers, "User-Agent: liblod/1 (+https://github.com/bbcarchdev/liblod)");
 	curl_easy_setopt(context->ch, CURLOPT_HTTPHEADER, context->headers);
-	curl_easy_setopt(context->ch, CURLOPT_VERBOSE, 0);
+	curl_easy_setopt(context->ch, CURLOPT_VERBOSE, context->verbose);
 	return context->ch;
 }
 
@@ -310,6 +310,26 @@ lod_set_error_(LODCONTEXT *context, const char *msg)
 int
 lod_reset_(LODCONTEXT *context)
 {
+	int i;
+
+	if(context->subjects)
+	{
+		for(i = 0; i < context->nsubjects; i++)
+		{
+			if(context->subjects[i] == context->subject)
+			{
+				context->subject = NULL;
+			}
+			if(context->subjects[i] == context->document)
+			{
+				context->document = NULL;
+			}
+			free(context->subjects[i]);
+		}
+		free(context->subjects);
+	}
+	context->subjects = NULL;
+	context->nsubjects = 0;
 	context->status = 0;
 	context->error = 0;
 	free(context->errmsg);
@@ -322,5 +342,31 @@ lod_reset_(LODCONTEXT *context)
 	context->buf = NULL;
 	context->buflen = 0;
 	context->bufsize = 0;
+	return 0;
+}
+
+/* Add a subject URI to the context; the string becomes owned by the
+ * the context.
+ */
+int
+lod_push_subject_(LODCONTEXT *context, char *uri)
+{
+	if(!context->subjects)
+	{
+		context->subjects = (char **) calloc(context->max_redirects + 1, sizeof(char *));
+		if(!context->subjects)
+		{
+			lod_set_error_(context, strerror(errno));
+			return -1;
+		}
+		context->nsubjects = 0;
+	}
+	if(context->nsubjects >= context->max_redirects)
+	{
+		lod_set_error_(context, strerror(ENOMEM));
+		return -1;
+	}
+	context->subjects[context->nsubjects] = uri;
+	context->nsubjects++;
 	return 0;
 }

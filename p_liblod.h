@@ -29,6 +29,10 @@ struct lod_context_struct
 	long status;
 	int error;
 	char *errmsg;
+	int max_redirects;
+	char **subjects;
+	int nsubjects;
+	int verbose:1;
 	int world_alloc:1;
 	int storage_alloc:1;
 	int model_alloc:1;
@@ -46,6 +50,7 @@ int lod_reset_(LODCONTEXT *context);
 int lod_set_error_(LODCONTEXT *context, const char *msg);
 int lod_fetch_(LODCONTEXT *context);
 int lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl);
+int lod_push_subject_(LODCONTEXT *context, char *uri);
 
 LODINSTANCE *lod_instance_create_(LODCONTEXT *context, librdf_statement *query, librdf_node *subject);
 

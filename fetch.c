@@ -6,7 +6,6 @@
 
 #define BUFSIZE                         512
 #define BUFMAX                          (256 * 1024 * 1024)
-#define MAX_REDIRECTS                   32
 
 static size_t lod_fetch_write_(char *ptr, size_t size, size_t nmemb, void *userdata);
 
@@ -20,12 +19,28 @@ lod_fetch_(LODCONTEXT *context)
 	librdf_parser *parser;
 	CURL *ch;
 	CURLcode e;
-	int r, followed_link;
+	int r, count, followed_link;
 	long code;
-	const char *base, *uri;
-	char *uribuf, *t, *p, *type, *newuri, errbuf[64];
-	size_t count;
+	const char *base, *uri, *fragment;
+	char *t, *p, *type, *newuri, *tempuri, errbuf[64];
+	size_t fraglen;
 
+	tempuri = NULL;
+	if(lod_push_subject_(context, context->subject))
+	{
+		return -1;
+	}
+	/* Save the fragment in case we need to apply it to a
+	 * a redirect URI
+	 */
+	if((fragment = strchr(context->subject, '#')))
+	{
+		fraglen = strlen(fragment);
+	}
+	else
+	{
+		fraglen = 0;
+	}
 	parser = NULL;
 	baseuri = NULL;
 	r = 0;
@@ -48,10 +63,9 @@ lod_fetch_(LODCONTEXT *context)
 	curl_easy_setopt(ch, CURLOPT_WRITEDATA, (void *) context);
 	curl_easy_setopt(ch, CURLOPT_WRITEFUNCTION, lod_fetch_write_);
 	curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 0);
-	uri = context->subject;
-	uribuf = NULL;	
+	uri = context->subjects[0];
 	type = NULL;
-	for(count = 0; count < MAX_REDIRECTS; count++)
+	for(count = 0; count < context->max_redirects; count++)
 	{
 		curl_easy_setopt(ch, CURLOPT_URL, uri);
 		free(type);
@@ -150,8 +164,7 @@ lod_fetch_(LODCONTEXT *context)
 					break;
 				}
 				r = 0;
-				free(uribuf);
-				uribuf = newuri;
+				lod_push_subject_(context, newuri);
 				uri = newuri;
 				followed_link = 1;
 				continue;
@@ -161,22 +174,46 @@ lod_fetch_(LODCONTEXT *context)
 		if(code > 300 && code <= 399)
 		{
 			/* Redirect response */
-			base = NULL;
-			if((e = curl_easy_getinfo(context->ch, CURLINFO_REDIRECT_URL, &base)))
+			free(tempuri);
+			tempuri = NULL;
+			newuri = NULL;
+			if((e = curl_easy_getinfo(context->ch, CURLINFO_REDIRECT_URL, &newuri)))
 			{
 				lod_set_error_(context, curl_easy_strerror(e));
 				r = 1;
 				break;
 			}
-			free(uribuf);
-			uribuf = strdup(base);
-			if(!uribuf)
+			tempuri = (char *) malloc(strlen(newuri) + fraglen + 1);
+			if(!tempuri)
 			{
 				lod_set_error_(context, strerror(errno));
 				r = 1;
 				break;
 			}
-			uri = uribuf;
+			strcpy(tempuri, newuri);
+			uri = tempuri;
+			if(code == 303)
+			{
+				/* In the case of a 303, the new URI is simply used
+				 * in the subsequent request -- we shouldn't ever push
+				 * it onto the potential subject list
+				 */
+				continue;
+			}
+			if(fragment)
+			{
+				t = strchr(tempuri, '#');
+				if(t)
+				{
+					strcpy(t, fragment);
+				}
+				else
+				{
+					strcat(tempuri, fragment);
+				}
+			}
+			lod_push_subject_(context, tempuri);
+			tempuri = NULL;
 			continue;
 		}
 		/* Some other status code */
@@ -185,7 +222,7 @@ lod_fetch_(LODCONTEXT *context)
 		lod_set_error_(context, errbuf);
 		break;
 	}
-	if(count == MAX_REDIRECTS)
+	if(count == context->max_redirects)
 	{
 		lod_set_error_(context, "too many redirects encountered");
 		r = 1;
@@ -222,6 +259,7 @@ lod_fetch_(LODCONTEXT *context)
 	{
 		librdf_free_parser(parser);
 	}
+	free(tempuri);
 	free(type);
 	free(context->buf);
 	context->buf = NULL;
