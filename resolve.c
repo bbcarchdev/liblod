@@ -8,7 +8,7 @@
 LODINSTANCE *
 lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 {
-	LODINSTANCE *inst;
+	LODINSTANCE *inst, *primary;
 	librdf_stream *stream;
 	librdf_world *world;
 	librdf_model *model;	
@@ -16,7 +16,9 @@ lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 	librdf_statement *query;
 	char *p;
 	int i;
+	LODFETCH mode;
 
+	mode = fetchmode & LOD_FETCH_MODE;
 	/* Duplicate the URI first, in case it's actually a string belonging
 	 * to the context itself which would get deallocated by lod_reset_()
 	 */
@@ -40,7 +42,7 @@ lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 		context->error = 1;
 		return NULL;
 	}
-	if(fetchmode == LOD_FETCH_ALWAYS)
+	if(mode == LOD_FETCH_ALWAYS)
 	{
 		/* It doesn't matter whether triples about the subject already exist
 		 * if we're going to fetch afresh anyway.
@@ -70,8 +72,8 @@ lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 			return NULL;
 		}
 	}
-	if(fetchmode == LOD_FETCH_NEVER ||
-	   (fetchmode == LOD_FETCH_ABSENT && !librdf_stream_end(stream)))
+	if(mode == LOD_FETCH_NEVER ||
+	   (mode == LOD_FETCH_ABSENT && !librdf_stream_end(stream)))
 	{
 		librdf_free_stream(stream);
 		inst = lod_instance_create_(context, query, node);
@@ -125,6 +127,20 @@ lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 		}
 		if(lod_instance_exists(inst))
 		{
+			if(fetchmode & LOD_FETCH_PRIMARYTOPIC)
+			{
+				primary = lod_instance_primarytopic(inst);
+				if(primary)
+				{
+					lod_instance_destroy(inst);
+					inst = primary;
+				}
+				else if(context->error)
+				{
+					lod_instance_destroy(inst);
+					return NULL;
+				}
+			}
 			break;
 		}
 	}

@@ -12,6 +12,7 @@
 #include "liblod.h"
 
 static LODCONTEXT *context;
+static LODFETCH mode, flags;
 
 static int resolve_uri(const char *uri, LODFETCH mode);
 static int process_command(const char *command);
@@ -23,6 +24,7 @@ main(int argc, char **argv)
 	int index;
 	char buf[1024], *t;
 
+	mode = LOD_FETCH_ABSENT;
 	if(curl_global_init(CURL_GLOBAL_ALL))
 	{
 		fprintf(stderr, "%s: failed to initialise libcurl\n", argv[0]);
@@ -82,7 +84,7 @@ main(int argc, char **argv)
 				return 1;
 			}
 		}
-		resolve_uri(t, LOD_FETCH_ABSENT);
+		resolve_uri(t, mode | flags);
 	}
 	if(context)
 	{
@@ -112,6 +114,7 @@ resolve_uri(const char *uri, LODFETCH mode)
 		librdf_serializer_serialize_stream_to_file_handle(serializer, stdout, NULL, stream);
 		librdf_free_serializer(serializer);
 		librdf_free_stream(stream);
+		printf("# subject URI is <%s>\n", librdf_uri_as_string(lod_instance_uri(instance)));
 	}
 	else if(lod_error(context))
 	{
@@ -123,7 +126,7 @@ resolve_uri(const char *uri, LODFETCH mode)
 	}
 	if((s = lod_subject(context)))
 	{
-		printf("# subject URI was <%s>\n", s);
+		printf("# request URI was <%s>\n", s);
 	}
 	if((s = lod_document(context)))
 	{
@@ -234,8 +237,72 @@ process_command(const char *command)
 			   "                      document\n"
 			   "    .primary          Print the triples relating to the primary topic of the\n"
 			   "                      most recently-fetched document\n"
+			   "    .mode [MODE]      Print or set the fetch mode\n"
+			   "    .follow           Toggle whether foaf:primaryTopic will be\n"
+			   "                      followed if encountered\n"
 			   "\n");
 		
+		return 0;
+	}
+	if(!strcmp(command, "mode") || !strncmp(command, "mode ", 5))
+	{
+		command += 4;
+		while(isspace(*command))
+		{
+			command++;
+		}
+		if(!*command)
+		{
+			switch(mode)
+			{
+			case LOD_FETCH_NEVER:
+				printf("will never fetch\n");
+				break;
+			case LOD_FETCH_ALWAYS:
+				printf("will always fetch\n");
+				break;
+			case LOD_FETCH_ABSENT:
+				printf("will conditionally fetch if URI is not already a subject in the context\n");
+				break;
+			default:
+				break;
+			}
+			return 0;
+		}
+		if(!strcmp(command, "never"))
+		{
+			printf("fetching disabled\n");
+			mode = LOD_FETCH_NEVER;
+			return 0;
+		}
+		if(!strcmp(command, "always"))
+		{
+			printf("fetching enabled (always fetch)\n");
+			mode = LOD_FETCH_NEVER;
+			return 0;
+		}
+		if(!strcmp(command, "conditional") || !strcmp(command, "cond") || !strcmp(command, "absent"))
+		{
+			printf("fetching conditionally enabled (fetch if needed)\n");
+			mode = LOD_FETCH_NEVER;
+			return 0;
+		}
+		fprintf(stderr, "unrecognised fetch mode: '%s'\n", command);
+		fprintf(stderr, "Usage: .mode always|never|cond[itional]\n");
+		return 0;
+	}
+	if(!strcmp(command, "follow"))
+	{
+		if(flags & LOD_FETCH_PRIMARYTOPIC)
+		{
+			flags &= ~LOD_FETCH_PRIMARYTOPIC;
+			printf("will not follow foaf:primaryTopic\n");
+		}
+		else
+		{
+			flags |= LOD_FETCH_PRIMARYTOPIC;
+			printf("will follow foaf:primaryTopic\n");
+		}
 		return 0;
 	}
 	fprintf(stderr, "unrecognised command: .%s\n", command);

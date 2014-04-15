@@ -19,7 +19,9 @@ typedef enum
 	/* Mask for fetch modes */
 	LOD_FETCH_MODE = 0x000f,
 	/* Mask for flags */
-	LOD_FETCH_FLAGS = 0xf000
+	LOD_FETCH_FLAGS = 0xf000,
+	/* Follow foaf:primaryTopic, if present */
+	LOD_FETCH_PRIMARYTOPIC = 0x1000
 } LODFETCH;
 
 /* Create a new LOD context */
@@ -130,5 +132,10 @@ librdf_stream *lod_instance_stream(LODINSTANCE *instance);
 
 /* Return 1 if the subject exists in the related context */
 int lod_instance_exists(LODINSTANCE *instance);
+
+/* Return an instance representing the foaf:primaryTopic of the supplied
+ * instance, if one exists.
+ */
+LODINSTANCE *lod_instance_primarytopic(LODINSTANCE *instance);
 
 #endif /*!LIBLOD_H_*/
