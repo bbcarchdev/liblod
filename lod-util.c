@@ -237,16 +237,16 @@ process_command(const char *command)
 			   "                      document\n"
 			   "    .primary          Print the triples relating to the primary topic of the\n"
 			   "                      most recently-fetched document\n"
-			   "    .mode [MODE]      Print or set the fetch mode\n"
+			   "    .fetch [MODE]     Print or set the fetch mode\n"
 			   "    .follow           Toggle whether foaf:primaryTopic will be\n"
 			   "                      followed if encountered\n"
 			   "\n");
 		
 		return 0;
 	}
-	if(!strcmp(command, "mode") || !strncmp(command, "mode ", 5))
+	if(!strcmp(command, "fetch") || !strncmp(command, "fetch ", 6))
 	{
-		command += 4;
+		command += 5;
 		while(isspace(*command))
 		{
 			command++;
@@ -278,13 +278,13 @@ process_command(const char *command)
 		if(!strcmp(command, "always"))
 		{
 			printf("fetching enabled (always fetch)\n");
-			mode = LOD_FETCH_NEVER;
+			mode = LOD_FETCH_ALWAYS;
 			return 0;
 		}
 		if(!strcmp(command, "conditional") || !strcmp(command, "cond") || !strcmp(command, "absent"))
 		{
 			printf("fetching conditionally enabled (fetch if needed)\n");
-			mode = LOD_FETCH_NEVER;
+			mode = LOD_FETCH_ABSENT;
 			return 0;
 		}
 		fprintf(stderr, "unrecognised fetch mode: '%s'\n", command);
