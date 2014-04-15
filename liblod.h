@@ -5,6 +5,7 @@
 # include <curl/curl.h>
 
 typedef struct lod_context_struct LODCONTEXT;
+typedef struct lod_subject_struct LODSUBJECT;
 
 /* Flags which alter how lod_resolve() behaves */
 typedef enum
@@ -108,6 +109,22 @@ const char *lod_errmsg(LODCONTEXT *context);
 int lod_librdf_logger(void *userdata, librdf_log_message *message);
 
 /* Resolve a LOD URI, potentially fetching data */
-librdf_stream *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode);
+LODSUBJECT *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode);
+
+/* Free a subject returned by lod_resolve() -- note that the triples remain
+ * part of the context until it is destroyed, and so a subsequent call to
+ * lod_resolve(context, "uri", LOD_FETCH_NEVER); would return a new subject
+ * referencing the same triples.
+ */
+int lod_subject_destroy(LODSUBJECT *subject);
+
+/* Return the URI of the subject */
+librdf_uri *lod_subject_uri(LODSUBJECT *subject);
+
+/* Return a stream filtering the triples by subject */
+librdf_stream *lod_subject_stream(LODSUBJECT *subject);
+
+/* Return 1 if the subject exists in the related context */
+int lod_subject_exists(LODSUBJECT *subject);
 
 #endif /*!LIBLOD_H_*/

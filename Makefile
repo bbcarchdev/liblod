@@ -7,7 +7,7 @@ OUT = lod-util
 OBJ = lod-util.o
 
 LIBOUT = liblod.a
-LIBOBJ = context.o resolve.o fetch.o html.o
+LIBOBJ = context.o subject.o resolve.o fetch.o html.o
 
 all: $(OUT) $(LIBOUT)
 

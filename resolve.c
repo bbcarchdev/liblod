@@ -5,14 +5,15 @@
 #include "p_liblod.h"
 
 /* Resolve a LOD URI, potentially fetching data */
-librdf_stream *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
+LODSUBJECT *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 {
+	LODSUBJECT *subj;
+	librdf_stream *stream;
 	librdf_world *world;
 	librdf_model *model;	
-	librdf_stream *stream;
 	librdf_node *node;
 	librdf_statement *query;
-
+	
 	lod_reset_(context);
 	context->subject = strdup(uri);
 	if(!context->subject)
@@ -56,7 +57,6 @@ librdf_stream *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchm
 			return NULL;
 		}
 		stream = librdf_model_find_statements(model, query);
-		librdf_free_statement(query);
 		if(!stream)
 		{
 			context->error = 1;
@@ -66,7 +66,17 @@ librdf_stream *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchm
 	if(fetchmode == LOD_FETCH_NEVER ||
 	   (fetchmode == LOD_FETCH_ABSENT && !librdf_stream_end(stream)))
 	{
-		return stream;
+		librdf_free_stream(stream);
+		subj = lod_subject_create_(context, query, node);
+		if(!subj)
+		{
+			return NULL;
+		}
+		return subj;
+	}
+	if(query)
+	{
+		librdf_free_statement(query);
 	}
 	if(stream)
 	{
@@ -92,13 +102,12 @@ librdf_stream *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchm
 		context->error = 1;
 		return NULL;
 	}
-	stream = librdf_model_find_statements(model, query);
-	librdf_free_statement(query);
-	if(!stream)
+	subj = lod_subject_create_(context, query, node);
+	if(!subj)
 	{
-		context->error = 1;
+		librdf_free_statement(query);
 		return NULL;
 	}
-	return stream;
+	return subj;
 }
 

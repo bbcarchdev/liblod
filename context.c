@@ -286,10 +286,8 @@ lod_librdf_logger(void *userdata, librdf_log_message *message)
 
 	context = (LODCONTEXT *) userdata;
 	level = librdf_log_message_level(message);
-	fprintf(stderr, "[%d] '%s'\n", level, librdf_log_message_message(message));
 	if(level >= LIBRDF_LOG_ERROR)
 	{
-		fprintf(stderr, "setting error condition\n");
 		lod_set_error_(context, librdf_log_message_message(message));
 	}
 	return 1;
