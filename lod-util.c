@@ -326,6 +326,9 @@ get_serializer(void)
 	uri = librdf_new_uri(world, (const unsigned char *) "http://www.w3.org/2000/01/rdf-schema#");
 	librdf_serializer_set_namespace(serializer, uri, "rdfs");
 	librdf_free_uri(uri);
+	uri = librdf_new_uri(world, (const unsigned char *) "http://www.w3.org/2001/XMLSchema#");
+	librdf_serializer_set_namespace(serializer, uri, "xsd");
+	librdf_free_uri(uri);
 	uri = librdf_new_uri(world, (const unsigned char *) "http://purl.org/dc/terms/");
 	librdf_serializer_set_namespace(serializer, uri, "dct");
 	librdf_free_uri(uri);
