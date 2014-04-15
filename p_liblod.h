@@ -35,7 +35,7 @@ struct lod_context_struct
 	int ch_alloc:1;
 };
 
-struct lod_subject_struct
+struct lod_instance_struct
 {
 	LODCONTEXT *context;
 	librdf_statement *query;
@@ -47,6 +47,6 @@ int lod_set_error_(LODCONTEXT *context, const char *msg);
 int lod_fetch_(LODCONTEXT *context);
 int lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl);
 
-LODSUBJECT *lod_subject_create_(LODCONTEXT *context, librdf_statement *query, librdf_node *subject);
+LODINSTANCE *lod_instance_create_(LODCONTEXT *context, librdf_statement *query, librdf_node *subject);
 
 #endif /*!P_LIBLOD_H_*/

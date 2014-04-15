@@ -5,17 +5,21 @@
 # include <curl/curl.h>
 
 typedef struct lod_context_struct LODCONTEXT;
-typedef struct lod_subject_struct LODSUBJECT;
+typedef struct lod_instance_struct LODINSTANCE;
 
 /* Flags which alter how lod_resolve() behaves */
 typedef enum
 {
 	/* Never fetch data, even if it doesn't exist in the model */
-	LOD_FETCH_NEVER,
+	LOD_FETCH_NEVER = 0,
 	/* Fetch data only if the subject isn't present in the model */
-	LOD_FETCH_ABSENT,
+	LOD_FETCH_ABSENT = 1,
 	/* Always fetch data, even if the subject is already present */
-	LOD_FETCH_ALWAYS
+	LOD_FETCH_ALWAYS = 2,
+	/* Mask for fetch modes */
+	LOD_FETCH_MODE = 0x000f,
+	/* Mask for flags */
+	LOD_FETCH_FLAGS = 0xf000
 } LODFETCH;
 
 /* Create a new LOD context */
@@ -109,22 +113,22 @@ const char *lod_errmsg(LODCONTEXT *context);
 int lod_librdf_logger(void *userdata, librdf_log_message *message);
 
 /* Resolve a LOD URI, potentially fetching data */
-LODSUBJECT *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode);
+LODINSTANCE *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode);
 
-/* Free a subject returned by lod_resolve() -- note that the triples remain
+/* Free an instance returned by lod_resolve() -- note that the triples remain
  * part of the context until it is destroyed, and so a subsequent call to
  * lod_resolve(context, "uri", LOD_FETCH_NEVER); would return a new subject
  * referencing the same triples.
  */
-int lod_subject_destroy(LODSUBJECT *subject);
+int lod_instance_destroy(LODINSTANCE *instance);
 
-/* Return the URI of the subject */
-librdf_uri *lod_subject_uri(LODSUBJECT *subject);
+/* Return the URI of the instance */
+librdf_uri *lod_instance_uri(LODINSTANCE *instance);
 
-/* Return a stream filtering the triples by subject */
-librdf_stream *lod_subject_stream(LODSUBJECT *subject);
+/* Return a stream filtering the triples in the context by subject */
+librdf_stream *lod_instance_stream(LODINSTANCE *instance);
 
 /* Return 1 if the subject exists in the related context */
-int lod_subject_exists(LODSUBJECT *subject);
+int lod_instance_exists(LODINSTANCE *instance);
 
 #endif /*!LIBLOD_H_*/

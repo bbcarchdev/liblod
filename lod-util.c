@@ -94,20 +94,20 @@ main(int argc, char **argv)
 static int
 resolve_uri(const char *uri, LODFETCH mode)
 {
-	LODSUBJECT *subject;
+	LODINSTANCE *instance;
 	librdf_serializer *serializer;
 	librdf_stream *stream;
 	const char *s;
 
-	subject = lod_resolve(context, uri, mode);
-	if(!subject)
+	instance = lod_resolve(context, uri, mode);
+	if(!instance)
 	{
 		fprintf(stderr, "failed to resolve <%s>: %s\n", uri, lod_errmsg(context));
 		return -1;
 	}
-	if(lod_subject_exists(subject) > 0)
+	if(lod_instance_exists(instance) > 0)
 	{
-		stream = lod_subject_stream(subject);
+		stream = lod_instance_stream(instance);
 		serializer = get_serializer();
 		librdf_serializer_serialize_stream_to_file_handle(serializer, stdout, NULL, stream);
 		librdf_free_serializer(serializer);
@@ -129,7 +129,7 @@ resolve_uri(const char *uri, LODFETCH mode)
 	{
 		printf("# document URI was <%s>\n", s);
 	}
-	lod_subject_destroy(subject);
+	lod_instance_destroy(instance);
 	return 0;
 }
 

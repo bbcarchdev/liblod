@@ -5,9 +5,10 @@
 #include "p_liblod.h"
 
 /* Resolve a LOD URI, potentially fetching data */
-LODSUBJECT *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
+LODINSTANCE *
+lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 {
-	LODSUBJECT *subj;
+	LODINSTANCE *inst;
 	librdf_stream *stream;
 	librdf_world *world;
 	librdf_model *model;	
@@ -67,12 +68,13 @@ LODSUBJECT *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode
 	   (fetchmode == LOD_FETCH_ABSENT && !librdf_stream_end(stream)))
 	{
 		librdf_free_stream(stream);
-		subj = lod_subject_create_(context, query, node);
-		if(!subj)
+		inst = lod_instance_create_(context, query, node);
+		if(!inst)
 		{
+			librdf_free_statement(query);
 			return NULL;
 		}
-		return subj;
+		return inst;
 	}
 	if(query)
 	{
@@ -102,12 +104,12 @@ LODSUBJECT *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode
 		context->error = 1;
 		return NULL;
 	}
-	subj = lod_subject_create_(context, query, node);
-	if(!subj)
+	inst = lod_instance_create_(context, query, node);
+	if(!inst)
 	{
 		librdf_free_statement(query);
 		return NULL;
 	}
-	return subj;
+	return inst;
 }
 
