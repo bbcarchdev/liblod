@@ -20,6 +20,8 @@ LIBS =
 
 DIST_SUBDIRS = m4 liburi
 
+EXTRA_DIST = LICENSE-2.0
+
 include_HEADERS = liblod.h
 
 lib_LTLIBRARIES = liblod.la
