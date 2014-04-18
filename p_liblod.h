@@ -53,6 +53,7 @@ int lod_set_error_(LODCONTEXT *context, const char *msg);
 int lod_fetch_(LODCONTEXT *context);
 int lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl);
 int lod_push_subject_(LODCONTEXT *context, char *uri);
+int lod_sniff_(LODCONTEXT *context, char **type);
 
 LODINSTANCE *lod_instance_create_(LODCONTEXT *context, librdf_statement *query, librdf_node *subject);
 

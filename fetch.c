@@ -229,6 +229,18 @@ lod_fetch_(LODCONTEXT *context)
 	}
 	if(!r)
 	{
+		if(!strcmp(type, "text/plain") ||
+		   !strcmp(type, "application/octet-stream") ||
+		   !strcmp(type, "application/x-unknown"))
+		{
+			if((r = lod_sniff_(context, &type)))
+			{
+				lod_set_error_(context, "failed to determine serialisation");
+			}
+		}
+	}
+	if(!r)
+	{
 		parser = librdf_new_parser(world, NULL, type, NULL);
 		if(!parser)
 		{
