@@ -4,8 +4,10 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
-# include <librdf.h>
 # include <errno.h>
+# include <ctype.h>
+
+# include <librdf.h>
 # include <curl/curl.h>
 # include <libxml/HTMLparser.h>
 # include <libxml/xpath.h>
