@@ -17,6 +17,7 @@ static LODFETCH mode, flags;
 static int resolve_uri(const char *uri, LODFETCH mode);
 static int process_command(const char *command);
 static librdf_serializer *get_serializer(void);
+static int perform_query(const char *query);
 
 int
 main(int argc, char **argv)
@@ -305,6 +306,20 @@ process_command(const char *command)
 		}
 		return 0;
 	}
+	if(!strcmp(command, "q") || !strncmp(command, "q ", 2))
+	{
+		command++;
+		while(isspace(*command))
+		{
+			command++;
+		}
+		if(!*command)
+		{
+			fprintf(stderr, "Usage: .q SPARQL-QUERY\n");
+			return 0;
+		}
+		return perform_query(command);
+	}
 	fprintf(stderr, "unrecognised command: .%s\n", command);
 	return 0;
 }
@@ -340,5 +355,33 @@ get_serializer(void)
 	librdf_free_uri(uri);
 	return serializer;
 }
+
+static int
+perform_query(const char *query)
+{
+	librdf_world *world;
+	librdf_model *model;
+	librdf_query *q;
+	librdf_query_results *res;
+
+	world = lod_world(context);
+	model = lod_model(context);
+	q = librdf_new_query(world, "sparql", NULL, (const unsigned char *) query, NULL);
+	res = librdf_query_execute(q, model);
+	if(!res)
+	{
+		fprintf(stderr, "failed to execute query: %s\n", lod_errmsg(context));
+		librdf_free_query(q);
+		return 0;
+	}
+
+	librdf_query_results_to_file_handle2(res, stdout, "table", NULL, NULL, NULL);
+
+	librdf_free_query_results(res);
+	librdf_free_query(q);
+	return 0;
+}
+
+	
 
 
