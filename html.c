@@ -83,6 +83,7 @@ lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl)
 		{
 			if(!strcmp((const char *) rel, "alternate") &&
 			   (!strcmp((const char *) type, "text/turtle") ||
+				!strcmp((const char *) type, "text/rdf+n3") ||
 				!strcmp((const char *) type, "application/rdf+xml")))
 			{
 				dest = uri_create_str((const char *) href, base);
