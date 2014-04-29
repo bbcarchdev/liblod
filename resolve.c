@@ -86,6 +86,7 @@ lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 		if(!stream)
 		{
 			context->error = 1;
+			librdf_free_statement(query);
 			return NULL;
 		}
 	}
