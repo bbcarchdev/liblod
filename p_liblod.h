@@ -49,8 +49,9 @@ struct lod_context_struct
 	int error;
 	char *errmsg;
 	int max_redirects;
-	char **subjects;
+	char **subjects;	
 	int nsubjects;
+	char *accept;
 	int verbose:1;
 	int world_alloc:1;
 	int storage_alloc:1;

@@ -63,6 +63,7 @@ lod_destroy(LODCONTEXT *context)
 	{
 		curl_easy_cleanup(context->ch);
 	}
+	free(context->accept);
 	free(context);
 	return 0;
 }
@@ -204,10 +205,24 @@ lod_set_model(LODCONTEXT *context, librdf_model *model)
 CURL *
 lod_curl(LODCONTEXT *context)
 {
+	const char *ua, *accept;
+
 	if(context->ch)
 	{
 		return context->ch;
 	}
+	ua = lod_useragent(context);
+	if(!ua)
+	{
+		lod_set_error_(context, "failed to obtain User-Agent for context");
+		return NULL;
+	}
+	accept = lod_accept(context);
+	if(!accept)
+	{
+		lod_set_error_(context, "failed to obtain Accept header for context");
+		return NULL;
+	}	
 	context->ch_alloc = 1;
 	context->ch = curl_easy_init();
 	if(!context->ch)
@@ -215,8 +230,8 @@ lod_curl(LODCONTEXT *context)
 		lod_set_error_(context, "failed to create new cURL handle");
 		return NULL;
 	}
-	context->headers = curl_slist_append(NULL, "Accept: text/turtle;q=0.8, application/rdf+xml;q=0.75, */*;q=0.1");
-	context->headers = curl_slist_append(context->headers, "User-Agent: liblod/1 (+https://github.com/bbcarchdev/liblod)");
+	context->headers = curl_slist_append(NULL, accept);
+	context->headers = curl_slist_append(context->headers, ua);
 	curl_easy_setopt(context->ch, CURLOPT_HTTPHEADER, context->headers);
 	curl_easy_setopt(context->ch, CURLOPT_VERBOSE, context->verbose);
 	return context->ch;
@@ -308,6 +323,68 @@ lod_librdf_logger(void *userdata, librdf_log_message *message)
 		lod_set_error_(context, librdf_log_message_message(message));
 	}
 	return 1;
+}
+
+/* Return the default User-agent header */
+const char *
+lod_useragent(LODCONTEXT *context)
+{
+	(void) context;
+
+	return "User-Agent: liblod/1 (+https://github.com/bbcarchdev/liblod)";
+}
+
+/* Return the default Accept header */
+const char *
+lod_accept(LODCONTEXT *context)
+{
+	librdf_world *world;
+	size_t nbytes;
+	unsigned int c, i;
+	const raptor_syntax_description *desc;
+	char *p;
+
+	if(context->accept)
+	{
+		return context->accept;
+	}
+	world = lod_world(context);
+	if(!world)
+	{
+		return NULL;
+	}
+	nbytes = 32;  
+	for(c = 0; (desc = librdf_parser_get_description(world, c)); c++)
+	{
+		for(i = 0; i < desc->mime_types_count; i++)
+		{
+			nbytes += strlen(desc->mime_types[i].mime_type) + 10;
+		}
+	}
+	context->accept = (char *) calloc(1, nbytes);
+	if(!context->accept)
+	{
+		lod_set_error_(context, strerror(errno));
+		return NULL;
+	}
+	strcpy(context->accept, "Accept: ");
+	p = strchr(context->accept, 0);
+	for(c = 0; (desc = librdf_parser_get_description(world, c)); c++)
+	{
+		for(i = 0; i < desc->mime_types_count; i++)
+		{
+			if(desc->mime_types[i].q >= 10)
+			{
+				p += sprintf(p, "%s;q=1.0, ", desc->mime_types[i].mime_type);
+			}
+			else
+			{
+				p += sprintf(p, "%s;q=0.%u, ", desc->mime_types[i].mime_type, desc->mime_types[i].q);
+			}
+		}
+	}
+	strcpy(p, "*/*;q=0.1");
+	return context->accept;
 }
 
 /* Set the error state and an error message on a context */

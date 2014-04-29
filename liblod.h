@@ -131,6 +131,12 @@ const char *lod_errmsg(LODCONTEXT *context);
  */
 int lod_librdf_logger(void *userdata, librdf_log_message *message);
 
+/* Return the default User-agent header */
+const char *lod_useragent(LODCONTEXT *context);
+
+/* Return the default Accept header */
+const char *lod_accept(LODCONTEXT *context);
+
 /* Resolve a LOD URI, potentially fetching data */
 LODINSTANCE *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode);
 

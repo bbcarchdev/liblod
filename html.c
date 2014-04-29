@@ -27,6 +27,7 @@ static void lod_html_xml_structured_error_(void *userData, xmlErrorPtr error);
 int
 lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl)
 {
+	librdf_world *world;
 	htmlParserCtxtPtr ctx;
 	xmlDoc *doc;
 	xmlXPathContextPtr xpctx;
@@ -36,6 +37,11 @@ lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl)
 	URI *base, *dest;
 
 	*newurl = NULL;
+	world = lod_world(context);
+	if(!world)
+	{
+		return -1;
+	}
 	base = uri_create_str(url, NULL);
 	if(!base)
 	{
@@ -82,10 +88,8 @@ lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl)
 		if(rel && type && href)
 		{
 			if(!strcmp((const char *) rel, "alternate") &&
-			   (!strcmp((const char *) type, "text/turtle") ||
-				!strcmp((const char *) type, "text/rdf+n3") ||
-				!strcmp((const char *) type, "application/rdf+xml")))
-			{
+			   librdf_parser_guess_name2(world, (const char *) type, NULL, NULL))
+			{				
 				dest = uri_create_str((const char *) href, base);
 			}
 		}
