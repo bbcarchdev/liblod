@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta charset="utf-8" />
+			<!--[if lt IE 9]><script>document.createElement('header');document.createElement('nav');document.createElement('section');document.createElement('article');document.createElement('aside');document.createElement('footer');</script><![endif]-->
+		<title>liblod</title><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/style.css"/><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/print.css" media="print"/><link rel="stylesheet" type="text/css" href="http://cloud.typography.com/6699852/732262/css/fonts.css"/><link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:300,500,300italic,500italic|Inconsolata|Arapey"/><link rel="stylesheet" type="text/css" href="local.css"/><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1"/><!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/ie78.css" /><![endif]-->
+	</head>
+<body class="refentry"><header><nav class="global"><div class="inner"><ul>
+		<li class="logo"><a href="http://bbcarchdev.github.io/res/"><abbr title="Research &amp; Education Space">RES</abbr></a></li>
+		<li><a href="http://bbcarchdev.github.io/res/guides">Guides</a></li>
+		<li><a href="http://acropolis.org.uk">Developer API</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/tools">Tools</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/code">Source code</a></li>
+	</ul></div></nav>
+		<div class="masthead"></div>
+		<h1>liblod</h1><h2>Linked Open Data client library</h2></header><article>
+  
+  
+  
+  
+  
+  
+  <section class="refsynopsisdiv"><h1>Synopsis</h1>
+	<p class="cmdsynopsis"><code>
+	  <kbd class="command">cc</kbd>
+	  flag
+	  file …
+	  -llod
+	  library …
+	</code></p>
+	
+	  #include &lt;liblod.h&gt;
+	
+  </section>
+
+  <section class="refsect1"><h1>Description</h1>
+	
+	<p>
+	  Linked Open Data is a method of publishing machine-readable structured
+	  data using web protocols, using resolveable URIs as the means of
+	  identifying the entities described and referred to by the data.
+	</p>
+	<p>
+	  liblod is a library for consuming Linked Open Data
+	  published on the web, providing a simple interface for resolving a
+	  URI and interrogating the data which results.
+	</p>
+  </section>
+  
+  <section class="refsect1"><h1>Interfaces</h1>
+	
+	<p>
+	  liblod provides the public interfaces listed
+	  below.
+	</p>
+
+	<div class="table"><table><thead><tr><th scope="col">Function</th><th scope="col">Description</th></tr></thead><tbody><tr><td><a href="lod_create.3"><code class="function">lod_create</code></a></td><td>Create a new context</td></tr><tr><td><a href="lod_resolve.3"><code class="function">lod_resolve</code></a></td><td>Attempt to resolve a Linked Open Data URI</td></tr><tr><td><a href="lod_destroy.3"><code class="function">lod_destroy</code></a></td><td>Destroy a previously-created context</td></tr><tr><td>lod_world</td><td>Obtain the librdf world used by a context</td></tr><tr><td>lod_set_world</td><td>Set the librdf world used by a context</td></tr><tr><td>lod_storage</td><td>Obtain the librdf storage used by a context</td></tr><tr><td>lod_set_storage</td><td>Set the librdf storage used by a context</td></tr><tr><td>lod_model</td><td>Obtain the librdf model used by a context</td></tr><tr><td>lod_set_model</td><td>Set the librdf model used by a context</td></tr><tr><td>lod_curl</td><td>Obtain the libcurl handle used by a context</td></tr><tr><td>lod_set_curl</td><td>Set the libcurl handle used by a context</td></tr><tr><td>lod_subject</td><td>Retrieve the most recently-resolved subject URI</td></tr><tr><td>lod_document</td><td>Retrieve the URL of the most recently parsed document</td></tr><tr><td>lod_status</td><td>Obtain the HTTP status of the most recent request</td></tr><tr><td><a href="lod_error.3"><code class="function">lod_error</code></a></td><td>Determine whether an error has occurred</td></tr><tr><td><a href="lod_errmsg.3"><code class="function">lod_errmsg</code></a></td><td>Obtain a description of a context's error condition</td></tr><tr><td>lod_librdf_logger</td><td>Default logging function for librdf world objects.</td></tr><tr><td>lod_useragent</td><td>Obtain the User-Agent HTTP header string for a context</td></tr><tr><td>lod_accept</td><td>Obtain the Accept HTTP header string for a context</td></tr><tr><td><a href="lod_instance_destroy.3"><code class="function">lod_instance_destroy</code></a></td><td>Free resources allocated to an instance</td></tr><tr><td><a href="lod_instance_stream.3"><code class="function">lod_instance_stream</code></a></td><td>Obtain a librdf stream for an instance</td></tr><tr><td><a href="lod_instance_uri.3"><code class="function">lod_instance_uri</code></a></td><td>Obtain a librdf URI for an instance</td></tr><tr><td><a href="lod_instance_exists.3"><code class="function">lod_instance_exists</code></a></td><td>Determine whether the subject of an instance exists within the context's model</td></tr><tr><td><a href="lod_instance_primarytopic"><code class="function">lod_instance_primarytopic</code></a></td><td>Attempt to follow a foaf:primaryTopic relationship</td></tr></tbody></table></div>
+  </section>
+
+  <section class="refsect1"><h1>Dependencies</h1>
+	
+	<p>
+	  liblod depends upon libcurl,
+	  librdf, libxml2 and
+	  liburi.
+	</p>
+	<p>
+	  A copy of liburi is included in the source
+	  distribution.
+	</p>
+  </section>
+
+  <section class="refsect1"><h1>See also</h1>
+	
+	
+	<p>
+	  <a href="http://curl.haxx.se/libcurl/">libcurl</a>,
+	  <a href="http://librdf.org/docs/api/index.html">librdf</a>,
+	  <a href="http://xmlsoft.org/html/index.html">libxml2</a>.
+	</p>
+  </section>
+  
+</article></body>
+</html>
+

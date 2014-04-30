@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta charset="utf-8" />
+			<!--[if lt IE 9]><script>document.createElement('header');document.createElement('nav');document.createElement('section');document.createElement('article');document.createElement('aside');document.createElement('footer');</script><![endif]-->
+		<title>lod_resolve</title><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/style.css"/><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/print.css" media="print"/><link rel="stylesheet" type="text/css" href="http://cloud.typography.com/6699852/732262/css/fonts.css"/><link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:300,500,300italic,500italic|Inconsolata|Arapey"/><link rel="stylesheet" type="text/css" href="local.css"/><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1"/><!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/ie78.css" /><![endif]-->
+	</head>
+<body class="refentry"><header><nav class="global"><div class="inner"><ul>
+		<li class="logo"><a href="http://bbcarchdev.github.io/res/"><abbr title="Research &amp; Education Space">RES</abbr></a></li>
+		<li><a href="http://bbcarchdev.github.io/res/guides">Guides</a></li>
+		<li><a href="http://acropolis.org.uk">Developer API</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/tools">Tools</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/code">Source code</a></li>
+	</ul></div></nav>
+		<div class="masthead"></div>
+		<h1>lod_resolve</h1><h2>Resolve a Linked Open Data URI</h2></header><article>
+  
+
+  
+  
+  
+  
+  <section class="refsynopsisdiv"><h1>Synopsis</h1>
+	
+	  #include &lt;liblod.h&gt;
+	  
+		LODINSTANCE * <code class="function">lod_resolve</code>
+		LODCONTEXT *<code class="parameter">context</code>
+		const char *<code class="parameter">uri</code>
+		LODFETCH <code class="parameter">mode</code>
+	  
+	
+  </section>
+
+  <section class="refsect1"><h1>Description</h1>
+	
+	
+	<p>
+	  <code class="function">lod_resolve</code> attempts to
+	  <i class="firstterm">resolve</i> a Linked Open Data URI: that is,
+	  perform one or more HTTP requests in order to obtain data describing
+	  the subject identified by <code class="parameter">uri</code>.
+	</p>
+	
+	<p>
+	  The behaviour of <code class="function">lod_resolve</code> depends upon the
+	  value of the <code class="parameter">mode</code> parameter:
+	</p>
+	
+	<dl>
+		<dt><code class="constant">FETCH_NEVER</code></dt>
+		<dd>
+			Do not perform any network (HTTP) requests. If the subject
+			identified by <code class="parameter">uri</code> already exists in
+			the model, the returned instance will reference it.
+		  </dd>
+	  
+		<dt><code class="constant">FETCH_ALWAYS</code></dt>
+		<dd>
+			Resolve the URI by performing network (HTTP) requests, even if
+			triples whose subject is the supplied <code class="parameter">uri</code>
+			already exist in the model.
+		  </dd>
+	  
+		<dt><code class="constant">FETCH_ABSENT</code></dt>
+		<dd>
+			If triples whose subject is the supplied
+			<code class="parameter">uri</code>, simply return a
+			<code class="type">LODINSTANCE</code> referring to those triples. Otherwise,
+			attempt to perform network (HTTP) requests to obtain data
+			describing the subject (as with <code class="constant">FETCH_ALWAYS</code>).
+		  </dd>
+	  </dl>
+  </section>
+
+  <section class="refsect1"><h1>Return value</h1>
+	
+
+	<p>
+	  Upon success, <code class="function">lod_resolve</code> returns a new
+	  <code class="type">LODINSTANCE</code>, which should be later freed using
+	  <code class="function">lod_instance_destroy</code>.
+	</p>
+
+	<p>
+	  If an error occurs, <code class="function">lod_resolve</code> returns
+	  <code class="constant">NULL</code>. A description of the error condition
+	  can be obtained using <code class="function">lod_errmsg</code>.
+	</p>
+  </section>
+
+  <section class="refsect1"><h1>See also</h1>
+	
+
+	<p>
+	  <a href="lod_create.3">lod_create</a>,
+	<a href="lod_errmsg.3">lod_errmsg</a>,
+	  <a href="lod_instance_exists.3">lod_instance_exists</a>,
+	  <a href="lod_instance_stream.3">lod_instance_stream</a>,
+	  <a href="http://librdf.org/docs/api/redland-parser.html#librdf-new-parser">librdf_parser_create</a>.
+	</p>
+  </section>
+
+</article></body>
+</html>
+
