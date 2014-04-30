@@ -40,3 +40,16 @@ lod_util_SOURCES = lod-util.c
 
 lod_util_LDADD = liblod.la \
 	@LIBRDF_LOCAL_LIBS@ @LIBRDF_LIBS@
+
+EXTRA_DIST = *.xml
+
+notrans_dist_man_MANS = liblod.3 \
+	lod_create.3 lod_destroy.3 lod_resolve.3 \
+	lod_error.3 lod_errmsg.3 \
+	lod_instance_destroy.3 lod_instance_exists.3 lod_instance_stream.3 \
+	lod_instance_uri.3 lod_instance_primarytopic.3
+
+SUFFIXES = .3.xml .3
+
+.3.xml.3:
+	$(XML2MAN) $<

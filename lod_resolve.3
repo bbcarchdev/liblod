@@ -1,0 +1,98 @@
+'\" t
+.\"     Title: lod_resolve
+.\"    Author: Mo McRoberts
+.\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 04/30/2014
+.\"    Manual: Library functions
+.\"    Source: Linked Open Data client
+.\"  Language: English
+.\"
+.TH "LOD_RESOLVE" "3" "04/30/2014" "Linked Open Data client" "Library functions"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+lod_resolve \- Resolve a Linked Open Data URI
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <liblod\&.h>
+.fi
+.ft
+.HP \w'LODINSTANCE\ *\ lod_resolve('u
+.BI "LODINSTANCE * lod_resolve(LODCONTEXT\ *" "context" ", const\ char\ *" "uri" ", LODFETCH\ " "mode" ");"
+.SH "DESCRIPTION"
+.PP
+
+\fBlod_resolve\fR
+attempts to
+resolve
+a Linked Open Data URI: that is, perform one or more HTTP requests in order to obtain data describing the subject identified by
+\fIuri\fR\&.
+.PP
+The behaviour of
+\fBlod_resolve\fR
+depends upon the value of the
+\fImode\fR
+parameter:
+.PP
+\fBFETCH_NEVER\fR
+.RS 4
+Do not perform any network (HTTP) requests\&. If the subject identified by
+\fIuri\fR
+already exists in the model, the returned instance will reference it\&.
+.RE
+.PP
+\fBFETCH_ALWAYS\fR
+.RS 4
+Resolve the URI by performing network (HTTP) requests, even if triples whose subject is the supplied
+\fIuri\fR
+already exist in the model\&.
+.RE
+.PP
+\fBFETCH_ABSENT\fR
+.RS 4
+If triples whose subject is the supplied
+\fIuri\fR, simply return a
+\fBLODINSTANCE\fR
+referring to those triples\&. Otherwise, attempt to perform network (HTTP) requests to obtain data describing the subject (as with
+\fBFETCH_ALWAYS\fR)\&.
+.RE
+.SH "RETURN VALUE"
+.PP
+Upon success,
+\fBlod_resolve\fR
+returns a new
+\fBLODINSTANCE\fR, which should be later freed using
+\fBlod_instance_destroy\fR\&.
+.PP
+If an error occurs,
+\fBlod_resolve\fR
+returns
+\fBNULL\fR\&. A description of the error condition can be obtained using
+\fBlod_errmsg\fR\&.
+.SH "SEE ALSO"
+.PP
+
+\m[blue]\fB\fBlod_create\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_errmsg\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_instance_exists\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_instance_stream\fR(3)\fR\m[],
+\m[blue]\fB\fBlibrdf_parser_create\fR(3)\fR\m[]\&.

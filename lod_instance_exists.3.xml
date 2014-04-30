@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<refentry version="5.0" xml:lang="en" xml:id="lod_instance_exists-3" xmlns="http://docbook.org/ns" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <info>
+	<authorgroup>
+	  <author>
+		<personname>
+		  <firstname>Mo</firstname>
+		  <surname>McRoberts</surname>
+		</personname>
+		<affiliation>
+		  <org>
+			<orgname>BBC</orgname>
+			<orgdiv>Archive Development</orgdiv>
+			<uri>http://www.bbc.co.uk/archive/</uri>
+		  </org>
+		</affiliation>
+	  </author>
+	</authorgroup>
+	<copyright>
+	  <year>2014</year>
+	  <holder>BBC</holder>
+	</copyright>
+  </info>
+  
+  <refmeta>
+	<refentrytitle>lod_instance_exists</refentrytitle>
+	<manvolnum>3</manvolnum>
+	<refmiscinfo class="source">Linked Open Data client</refmiscinfo>
+	<refmiscinfo class="manual">Library functions</refmiscinfo>
+  </refmeta>
+  
+  <refnamediv>
+	<refname>lod_instance_exists</refname>
+	<refpurpose>Check that the subject referred to by a liblod instance exists</refpurpose>
+  </refnamediv>
+  
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcsynopsisinfo>#include &lt;liblod.h&gt;</funcsynopsisinfo>
+	  <funcprototype>
+		<funcdef>int <function>lod_instance_exists</function></funcdef>
+		<paramdef>LODINSTANCE *<parameter>instance</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+	<title>Description</title>
+
+	<para>
+	  <function>lod_instance_exists</function> checks that the subject of
+	  an instance exists in the associated context's model.
+	</para>
+	<para>
+	  A <package>liblod</package> instance is a simple kind of query for
+	  any triples whose subject matches the URI provided to
+	  <function>lod_resolve</function>. There are various circumstances
+	  by which <function>lod_resolve</function> can successfully return an
+	  instance, but that the subject of the instance doesn't actually
+	  exist in the data held by the model.
+	</para>
+	<para>
+	  Because an instance is a query against a model, a call to
+	  <function>lod_instance_exists</function> may have different results
+	  at different times. For example, it might initially return zero (false),
+	  but following a new call to <function>lod_resolve</function> (or
+	  manually adding triples to the associated <package>librdf</package>
+	  model), the next call might return non-zero (true).
+	</para>
+  </refsect1>
+
+  <refsect1>
+	<title>Return value</title>
+	<para>
+	  If the subject of the instance does not exist in the context,
+	  <function>lod_instance_exists</function> returns zero.
+	</para>
+	<para>
+	  Otherwise, <function>lod_instance_exists</function> returns
+	  a positive integer.
+	</para>
+  </refsect1>
+  
+  <refsect1>
+	<title>See also</title>
+	<link xlink:href="lod_resolve.3"><citerefentry><refentrytitle>lod_resolve</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.
+  </refsect1>
+  
+</refentry>
