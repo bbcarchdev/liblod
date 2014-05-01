@@ -38,7 +38,7 @@
 	<funcsynopsis>
 	  <funcsynopsisinfo>#include &lt;liblod.h&gt;</funcsynopsisinfo>
 	  <funcprototype>
-		<funcdef>LODINSTANCE * <function>lod_resolve</function></funcdef>
+		<funcdef>LODINSTANCE *<function>lod_resolve</function></funcdef>
 		<paramdef>LODCONTEXT *<parameter>context</parameter></paramdef>
 		<paramdef>const char *<parameter>uri</parameter></paramdef>
 		<paramdef>LODFETCH <parameter>mode</parameter></paramdef>
