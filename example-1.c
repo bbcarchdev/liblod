@@ -62,7 +62,7 @@ main(void)
 		librdf_free_stream(stream);
 		lod_instance_destroy(inst);
 		lod_destroy(ctx);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	if(librdf_serializer_serialize_stream_to_file_handle(serializer, stdout, NULL, stream))
 	{
@@ -71,7 +71,7 @@ main(void)
 		librdf_free_stream(stream);
 		lod_instance_destroy(inst);
 		lod_destroy(ctx);
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	librdf_free_serializer(serializer);
 	librdf_free_stream(stream);
