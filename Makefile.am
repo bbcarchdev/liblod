@@ -38,6 +38,8 @@ liblod_la_LIBADD = @LIBCURL_LOCAL_LIBS@ @LIBCURL_LIBS@ \
 	@LIBRDF_LOCAL_LIBS@ @LIBRDF_LIBS@ \
 	@LIBURI_LOCAL_LIBS@ @LIBURI_LIBS@
 
+liblod_la_LDFLAGS = -avoid-version
+
 lod_util_SOURCES = lod-util.c
 
 lod_util_LDADD = liblod.la \
