@@ -18,9 +18,11 @@ ACLOCAL_AMFLAGS = -I m4
 
 LIBS =
 
-DIST_SUBDIRS = m4 liburi
+DIST_SUBDIRS = m4 liburi docs
 
-EXTRA_DIST = LICENSE-2.0
+SUBDIRS = @subdirs@ docs
+
+EXTRA_DIST = LICENSE-2.0 *.xml
 
 include_HEADERS = liblod.h
 
@@ -40,8 +42,6 @@ lod_util_SOURCES = lod-util.c
 
 lod_util_LDADD = liblod.la \
 	@LIBRDF_LOCAL_LIBS@ @LIBRDF_LIBS@
-
-EXTRA_DIST = *.xml
 
 notrans_dist_man_MANS = liblod.3 \
 	lod_create.3 lod_destroy.3 lod_resolve.3 \

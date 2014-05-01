@@ -4,3 +4,9 @@
 [submodule "m4"]
 	path = m4
 	url = git://github.com/nevali/m4.git
+[submodule "docbook-html5"]
+	path = docbook-html5
+	url = git://github.com/bbcarchdev/docbook-html5.git
+[submodule "docs"]
+	path = docs
+	url = git://github.com/bbcarchdev/liblod.git

@@ -37,6 +37,7 @@ BT_REQUIRE_LIBCURL
 BT_REQUIRE_LIBRDF
 BT_REQUIRE_LIBURI_INCLUDED
 
+use_docbook_html5=yes
 BT_BUILD_DOCS
 
 BT_DEFINE_PREFIX
@@ -45,6 +46,7 @@ AC_CONFIG_FILES([
 Makefile
 m4/Makefile
 liburi/Makefile
+docs/Makefile
 ])
 
 AC_OUTPUT
