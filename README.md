@@ -5,7 +5,7 @@
 web servers. It's a thin wrapper around [librdf](http://librdf.org),
 [libcurl](http://curl.haxx.se/libcurl/), and [libxml2](http://xmlsoft.org).
 
-## Building Twine from Git
+## Building liblod from Git
 
 Twine uses `autoconf`, `libtool` and `automake` to build.
 
