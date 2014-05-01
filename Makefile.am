@@ -22,7 +22,7 @@ DIST_SUBDIRS = m4 liburi docs
 
 SUBDIRS = @subdirs@ docs
 
-EXTRA_DIST = LICENSE-2.0 *.xml
+EXTRA_DIST = LICENSE-2.0 README.md *.xml
 
 include_HEADERS = liblod.h
 
