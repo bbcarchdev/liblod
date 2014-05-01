@@ -26,6 +26,7 @@ lod_instance_create_(LODCONTEXT *context, librdf_statement *query, librdf_node *
 {
 	LODINSTANCE *p;
 
+	context->error = 0;
 	p = (LODINSTANCE *) calloc(1, sizeof(LODINSTANCE));
 	if(!p)
 	{
@@ -41,6 +42,7 @@ lod_instance_create_(LODCONTEXT *context, librdf_statement *query, librdf_node *
 int
 lod_instance_destroy(LODINSTANCE *instance)
 {
+	instance->context->error = 0;
 	librdf_free_statement(instance->query);
 	free(instance);
 	return 0;
@@ -50,6 +52,7 @@ lod_instance_destroy(LODINSTANCE *instance)
 librdf_uri *
 lod_instance_uri(LODINSTANCE *instance)
 {
+	instance->context->error = 0;
 	return librdf_node_get_uri(instance->subject);
 }
 
@@ -59,6 +62,7 @@ lod_instance_stream(LODINSTANCE *instance)
 	librdf_stream *stream;
 	librdf_model *model;
 
+	instance->context->error = 0;
 	model = lod_model(instance->context);
 	if(!model)
 	{
@@ -80,6 +84,7 @@ lod_instance_exists(LODINSTANCE *instance)
 	librdf_model *model;
 	int e;
 
+	instance->context->error = 0;
 	model = lod_model(instance->context);
 	if(!model)
 	{
@@ -108,7 +113,8 @@ lod_instance_primarytopic(LODINSTANCE *instance)
 	librdf_node *subject, *predicate, *object, *onode;
 	librdf_statement *query, *oquery, *triple;
 	librdf_stream *result, *oresult;
-	
+
+	instance->context->error = 0;	
 	inst = NULL;
 	world = lod_world(instance->context);
 	if(!world)

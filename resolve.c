@@ -35,6 +35,7 @@ lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
 	int i;
 	LODFETCH mode;
 
+	context->error = 0;
 	mode = fetchmode & LOD_FETCH_MODE;
 	/* Duplicate the URI first, in case it's actually a string belonging
 	 * to the context itself which would get deallocated by lod_reset_()

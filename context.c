@@ -72,6 +72,7 @@ lod_destroy(LODCONTEXT *context)
 librdf_world *
 lod_world(LODCONTEXT *context)
 {
+	context->error = 0;
 	if(context->world)
 	{
 		return context->world;
@@ -92,6 +93,7 @@ lod_world(LODCONTEXT *context)
 int
 lod_set_world(LODCONTEXT *context, librdf_world *world)
 {	
+	context->error = 0;
 	if(context->model && context->model_alloc)
 	{
 		librdf_free_model(context->model);
@@ -116,7 +118,8 @@ librdf_storage *
 lod_storage(LODCONTEXT *context)
 {
 	librdf_world *world;
-	
+
+	context->error = 0;	
 	if(context->storage)
 	{
 		return context->storage;
@@ -143,6 +146,7 @@ lod_storage(LODCONTEXT *context)
 int
 lod_set_storage(LODCONTEXT *context, librdf_storage *storage)
 {
+	context->error = 0;
 	if(context->model && context->model_alloc)
 	{
 		librdf_free_model(context->model);
@@ -163,6 +167,7 @@ lod_model(LODCONTEXT *context)
 	librdf_world *world;
 	librdf_storage *storage;
 
+	context->error = 0;
 	if(context->model)
 	{
 		return context->model;
@@ -192,6 +197,7 @@ lod_model(LODCONTEXT *context)
 int
 lod_set_model(LODCONTEXT *context, librdf_model *model)
 {
+	context->error = 0;
 	if(context->model && context->model_alloc)
 	{
 		librdf_free_model(context->model);
@@ -207,6 +213,7 @@ lod_curl(LODCONTEXT *context)
 {
 	const char *ua, *accept;
 
+	context->error = 0;
 	if(context->ch)
 	{
 		return context->ch;
@@ -241,6 +248,7 @@ lod_curl(LODCONTEXT *context)
 int
 lod_set_curl(LODCONTEXT *context, CURL *ch)
 {
+	context->error = 0;
 	if(context->headers)
 	{
 		curl_slist_free_all(context->headers);
@@ -261,6 +269,7 @@ lod_set_curl(LODCONTEXT *context, CURL *ch)
 const char *
 lod_subject(LODCONTEXT *context)
 {
+	context->error = 0;
 	return context->subject;
 }
 
@@ -270,6 +279,7 @@ lod_subject(LODCONTEXT *context)
 const char *
 lod_document(LODCONTEXT *context)
 {
+	context->error = 0;
 	return context->document;
 }
 
@@ -279,6 +289,7 @@ lod_document(LODCONTEXT *context)
 long
 lod_status(LODCONTEXT *context)
 {
+	context->error = 0;
 	return context->status;
 }
 
@@ -288,6 +299,7 @@ lod_status(LODCONTEXT *context)
 int
 lod_error(LODCONTEXT *context)
 {
+	context->error = 0;
 	return context->error;
 }
 
@@ -295,6 +307,7 @@ lod_error(LODCONTEXT *context)
 const char *
 lod_errmsg(LODCONTEXT *context)
 {
+	context->error = 0;
 	if(!context->error)
 	{
 		return NULL;
@@ -331,6 +344,7 @@ lod_useragent(LODCONTEXT *context)
 {
 	(void) context;
 
+	context->error = 0;
 	return "User-Agent: liblod/1 (+https://github.com/bbcarchdev/liblod)";
 }
 
@@ -344,6 +358,7 @@ lod_accept(LODCONTEXT *context)
 	const raptor_syntax_description *desc;
 	char *p;
 
+	context->error = 0;
 	if(context->accept)
 	{
 		return context->accept;
