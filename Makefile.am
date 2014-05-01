@@ -30,6 +30,8 @@ lib_LTLIBRARIES = liblod.la
 
 bin_PROGRAMS = lod-util
 
+noinst_PROGRAMS = example-1
+
 liblod_la_SOURCES = p_liblod.h \
 	context.c instance.c resolve.c fetch.c sniff.c html.c
 
@@ -43,6 +45,11 @@ liblod_la_LDFLAGS = -avoid-version
 lod_util_SOURCES = lod-util.c
 
 lod_util_LDADD = liblod.la \
+	@LIBRDF_LOCAL_LIBS@ @LIBRDF_LIBS@
+
+example_1_SOURCES = example-1.c
+
+example_1_LDADD = liblod.la \
 	@LIBRDF_LOCAL_LIBS@ @LIBRDF_LIBS@
 
 notrans_dist_man_MANS = liblod.3 \
