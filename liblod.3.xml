@@ -98,7 +98,7 @@
 	  </seglistitem>
 	  
 	  <seglistitem>
-		<seg>lod_world</seg>
+		<seg><link xlink:href="lod_world.3"><function>lod_world</function></link></seg>
 		<seg>Obtain the <package>librdf</package> world used by a context</seg>
 	  </seglistitem>
 	  
@@ -108,7 +108,7 @@
 	  </seglistitem>
 	  
 	  <seglistitem>
-		<seg>lod_storage</seg>
+		<seg><link xlink:href="lod_storage.3"><function>lod_storage</function></link></seg>
 		<seg>Obtain the <package>librdf</package> storage used by a context</seg>
 	  </seglistitem>
 	  
@@ -118,7 +118,7 @@
 	  </seglistitem>
 
 	  <seglistitem>
-		<seg>lod_model</seg>
+		<seg><link xlink:href="lod_model.3"><function>lod_model</function></link></seg>
 		<seg>Obtain the <package>librdf</package> model used by a context</seg>
 	  </seglistitem>
 	  
@@ -128,7 +128,7 @@
 	  </seglistitem>
 	  
 	  <seglistitem>
-		<seg>lod_curl</seg>
+		<seg><link xlink:href="lod_curl"><function>lod_curl</function></link></seg>
 		<seg>Obtain the <package>libcurl</package> handle used by a context</seg>
 	  </seglistitem>
 	  

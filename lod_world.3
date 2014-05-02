@@ -1,5 +1,5 @@
 '\" t
-.\"     Title: lod_create
+.\"     Title: lod_storage
 .\"    Author: Mo McRoberts
 .\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
 .\"      Date: 05/02/2014
@@ -7,7 +7,7 @@
 .\"    Source: Linked Open Data client
 .\"  Language: English
 .\"
-.TH "LOD_CREATE" "3" "05/02/2014" "Linked Open Data client" "Library functions"
+.TH "LOD_STORAGE" "3" "05/02/2014" "Linked Open Data client" "Library functions"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-lod_create \- Create a new liblod context
+lod_world \- Obtain a librdf storage associated with a context
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -36,30 +36,35 @@ lod_create \- Create a new liblod context
 #include <liblod\&.h>
 .fi
 .ft
-.HP \w'LODCONTEXT\ *lod_create('u
-.BI "LODCONTEXT *lod_create(void);"
+.HP \w'librdf_storage\ *lod_storage('u
+.BI "librdf_storage *lod_storage(LODCONTEXT\ *" "context" ");"
 .SH "DESCRIPTION"
 .PP
 
-\fBlod_create\fR
-allocates a new
-liblod
-context\&. Typically, a context is created for a single discovery session, with its own
-\fBlibrdf_model\fR
-and
-libcurl
-handle\&. One or more URIs can be resolved (retrieving the data related to them from Linked Open Data web servers and populating the model), the model interrogated, and the context eventually destroyed to free the resources associated with it\&.
-.SH "NOTES"
+\fBlod_storage\fR
+obtains the
+\fBlibrdf_storage\fR
+which is associated with
+\fIcontext\fR\&.
+.SH "RETURN VALUE"
 .PP
-If your application needs to call
-\fBcurl_global_init\fR
-with any value other than
-\fBCURL_GLOBAL_ALL\fR, you should invoke it prior to calling
-\fBlod_create\fR
-for the first time\&.
+Upon success,
+\fBlod_storage\fR
+returns the
+\fBlibrdf_storage\fR
+object associated with
+\fIcontext\fR\&.
+.PP
+If an error occurs,
+\fBlod_storage\fR
+returns
+\fBNULL\fR\&.
+\fBlod_errmsg\fR
+can be used to obtain a description of the error condition\&.
 .SH "SEE ALSO"
 .PP
 
-\m[blue]\fB\fBlod_destroy\fR(3)\fR\m[],
-\m[blue]\fB\fBlod_resolve\fR(3)\fR\m[],
-\m[blue]\fB\fBcurl_global_init\fR(3)\fR\m[]\&.
+\m[blue]\fB\fBlod_world\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_model\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_curl\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_errmsg\fR(3)\fR\m[],
