@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta charset="utf-8" />
+			<!--[if lt IE 9]><script>document.createElement('header');document.createElement('nav');document.createElement('section');document.createElement('article');document.createElement('aside');document.createElement('footer');</script><![endif]-->
+		<title>lod_curl</title><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/style.css"/><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/print.css" media="print"/><link rel="stylesheet" type="text/css" href="http://cloud.typography.com/6699852/732262/css/fonts.css"/><link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:300,500,300italic,500italic|Inconsolata|Arapey"/><link rel="stylesheet" type="text/css" href="local.css"/><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1"/><!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/ie78.css" /><![endif]-->
+	</head>
+<body class="refentry"><header><nav class="global"><div class="inner"><ul>
+		<li class="logo"><a href="http://bbcarchdev.github.io/res/"><abbr title="Research &amp; Education Space">RES</abbr></a></li>
+		<li><a href="http://bbcarchdev.github.io/res/guides">Guides</a></li>
+		<li><a href="http://acropolis.org.uk">Developer API</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/tools">Tools</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/code">Source code</a></li>
+	</ul></div></nav>
+		<div class="masthead"></div>
+		<h1>lod_curl</h1><h2>Obtain a libcurl handle associated with a context</h2></header><article>
+  
+  
+  
+  
+  
+  
+  <section class="refsynopsisdiv"><h1>Synopsis</h1>
+	<div class="funcsynopsis">
+	  <p class="funcsynopsisinfo"><code>#include &lt;liblod.h&gt;</code></p>
+	  <p class="funcprototype"><code>CURL *<code class="function">lod_curl</code>(LODCONTEXT *<code class="parameter">context</code>);</code></p>
+	</div>
+  </section>
+
+  <section class="refsect1"><h1>Description</h1>
+	
+
+	<p>
+	  <code class="function">lod_curl</code> obtains the <code class="type">CURL</code>
+	  handle which is associated with <code class="parameter">context</code>.	  
+	</p>	
+  </section>
+  
+  <section class="refsect1"><h1>Return value</h1>
+		
+
+	<p>
+	  Upon success, <code class="function">lod_curl</code> returns the
+	  <code class="type">CURL</code> handle associated with <code class="parameter">context</code>.
+	</p>
+
+	<p>
+	  If an error occurs, <code class="function">lod_curl</code> returns
+	  <code class="constant">NULL</code>. <code class="function">lod_errmsg</code> can be
+	  used to obtain a description of the error condition.
+	</p>
+  </section>
+  
+
+  <section class="refsect1"><h1>See also</h1>
+	
+
+	<p>
+	  <a href="lod_world.3">lod_world</a>,
+	  <a href="lod_storage.3">lod_storage</a>,
+	  <a href="lod_model.3">lod_model</a>,
+	  <a href="lod_errmsg.3">lod_errmsg</a>,
+	</p>
+  </section>
+  
+</article></body>
+</html>
+
