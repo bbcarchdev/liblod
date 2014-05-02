@@ -30,7 +30,7 @@
   </refmeta>
   
   <refnamediv>
-	<refname>lod_world</refname>
+	<refname>lod_storage</refname>
 	<refpurpose>Obtain a librdf storage associated with a context</refpurpose>
   </refnamediv>
   
