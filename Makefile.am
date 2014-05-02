@@ -23,6 +23,8 @@ dist_noinst_DATA = local.css index.html \
 	lod_create.3.html lod_destroy.3.html \
 	lod_resolve.3.html lod_locate.3.html lod_fetch.3.html \
 	lod_world.3.html lod_storage.3.html lod_model.3.html lod_curl.3.html \
+	lod_set_world.3.html lod_set_storage.3.html lod_set_model.3.html \
+	lod_set_curl.3.html \
 	lod_error.3.html lod_errmsg.3.html \
 	lod_instance_destroy.3.html lod_instance_exists.3.html \
 	lod_instance_stream.3.html lod_instance_uri.3.html \
@@ -56,6 +58,18 @@ lod_model.3.html: $(top_srcdir)/lod_model.3.xml
 	$(XML2HTML) $<
 
 lod_curl.3.html: $(top_srcdir)/lod_curl.3.xml
+	$(XML2HTML) $<
+
+lod_set_world.3.html: $(top_srcdir)/lod_set_world.3.xml
+	$(XML2HTML) $<
+
+lod_set_storage.3.html: $(top_srcdir)/lod_set_storage.3.xml
+	$(XML2HTML) $<
+
+lod_set_model.3.html: $(top_srcdir)/lod_set_model.3.xml
+	$(XML2HTML) $<
+
+lod_set_curl.3.html: $(top_srcdir)/lod_set_curl.3.xml
 	$(XML2HTML) $<
 
 lod_error.3.html: $(top_srcdir)/lod_error.3.xml

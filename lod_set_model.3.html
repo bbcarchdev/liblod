@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta charset="utf-8" />
+			<!--[if lt IE 9]><script>document.createElement('header');document.createElement('nav');document.createElement('section');document.createElement('article');document.createElement('aside');document.createElement('footer');</script><![endif]-->
+		<title>lod_set_model</title><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/style.css"/><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/print.css" media="print"/><link rel="stylesheet" type="text/css" href="http://cloud.typography.com/6699852/732262/css/fonts.css"/><link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:300,500,300italic,500italic|Inconsolata|Arapey"/><link rel="stylesheet" type="text/css" href="local.css"/><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1"/><!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/ie78.css" /><![endif]-->
+	</head>
+<body class="refentry"><header><nav class="global"><div class="inner"><ul>
+		<li class="logo"><a href="http://bbcarchdev.github.io/res/"><abbr title="Research &amp; Education Space">RES</abbr></a></li>
+		<li><a href="http://bbcarchdev.github.io/res/guides">Guides</a></li>
+		<li><a href="http://acropolis.org.uk">Developer API</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/tools">Tools</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/code">Source code</a></li>
+	</ul></div></nav>
+		<div class="masthead"></div>
+		<h1>lod_set_model</h1><h2>Set a new librdf model to be used by a context</h2></header><article>
+  
+  
+  
+  
+  
+  
+  <section class="refsynopsisdiv"><h1>Synopsis</h1>
+	<div class="funcsynopsis">
+	  <p class="funcsynopsisinfo"><code>#include &lt;liblod.h&gt;</code></p>
+	  <p class="funcprototype"><code>int <code class="function">lod_set_model</code>(LODCONTEXT *<code class="parameter">context</code>, librdf_model *<code class="parameter">model</code>);</code></p>
+	</div>
+  </section>
+
+  <section class="refsect1"><h1>Description</h1>
+	
+
+	<p>
+	  <code class="function">lod_set_model</code> sets or resets the
+	  <code class="type">librdf_model</code> object associated with
+	  <code class="parameter">context</code>.
+	</p>
+	<p>
+	  Any existing <code class="type">librdf_model</code> associated with the
+	  context will be discarded, freeing it
+	  (using <code class="function">librdf_free_model</code>) if it was automatically
+	  allocated by liblod, as is the case when a context
+	  is initially created.
+	</p>
+	<p>
+	  If <code class="parameter">model</code> is <code class="constant">NULL</code>,
+	  a new <code class="type">librdf_model</code> will be
+	  allocated and associated with <code class="type">context</code>. This object will
+	  be automatically destroyed when it is no longer required.
+	</p>
+	<p>
+	  If <code class="parameter">model</code> is not <code class="constant">NULL</code>,
+	  then the supplied <code class="type">librdf_model</code> will be associated with
+	  <code class="type">context</code>. liblod will not automatically
+	  destroy this <code class="type">librdf_model</code> object when it is is no longer
+	  required, and it is the calling application's responsibility to do
+	  so.
+	</p>
+  </section>
+
+  <section class="refsect1"><h1>Caution</h1>
+	
+	<p>
+	  Do not destroy a <code class="type">librdf_model</code> object associated with a
+	  context until after it has either been replaced (via another call to
+	  <code class="function">lod_set_model</code>), or the context itself has been
+	  destroyed (by <code class="function">lod_destroy</code>).
+	</p>
+  </section>
+  
+  <section class="refsect1"><h1>See also</h1>
+	
+
+	<p>
+	  <a href="lod_model.3">lod_model</a>,
+	  <a href="lod_create.3">lod_create</a>,
+	  <a href="lod_destroy.3">lod_destroy</a>,
+	  <a href="lod_errmsg.3">lod_errmsg</a>,
+	  <a href="http://librdf.org/docs/api/redland-model.html#librdf-new-model-with-options">librdf_new_model_with_options</a>,
+	  <a href="http://librdf.org/docs/api/redland-model.html#librdf-free-model">librdf_free_model</a>.
+	</p>
+  </section>
+  
+</article></body>
+</html>
+
