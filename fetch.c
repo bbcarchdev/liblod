@@ -235,7 +235,7 @@ lod_fetch_(LODCONTEXT *context)
 		}
 		/* Some other status code */
 		r = 1;
-		sprintf(errbuf, "HTTP status %ld\n", code);
+		sprintf(errbuf, "HTTP status %ld", code);
 		lod_set_error_(context, errbuf);
 		break;
 	}
