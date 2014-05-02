@@ -103,7 +103,7 @@
 	  </seglistitem>
 	  
 	  <seglistitem>
-		<seg>lod_set_world</seg>
+		<seg><link xlink:href="lod_set_world"><function>lod_set_world</function></link></seg>
 		<seg>Set the <package>librdf</package> world used by a context</seg>
 	  </seglistitem>
 	  
@@ -113,7 +113,7 @@
 	  </seglistitem>
 	  
 	  <seglistitem>
-		<seg>lod_set_storage</seg>
+		<seg><link xlink:href="lod_set_storage.3"><function>lod_set_storage</function></link></seg>
 		<seg>Set the <package>librdf</package> storage used by a context</seg>
 	  </seglistitem>
 
@@ -123,7 +123,7 @@
 	  </seglistitem>
 	  
 	  <seglistitem>
-		<seg>lod_set_model</seg>
+		<seg><link xlink:href="lod_set_model.3"><function>lod_set_model</function></link></seg>
 		<seg>Set the <package>librdf</package> model used by a context</seg>
 	  </seglistitem>
 	  
@@ -133,7 +133,7 @@
 	  </seglistitem>
 	  
 	  <seglistitem>
-		<seg>lod_set_curl</seg>
+		<seg><link xlink:href="lod_set_curl.3"><function>lod_set_curl</function></link></seg>
 		<seg>Set the <package>libcurl</package> handle used by a context</seg>
 	  </seglistitem>
 	  

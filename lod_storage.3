@@ -1,5 +1,5 @@
 '\" t
-.\"     Title: lod_world
+.\"     Title: lod_storage
 .\"    Author: Mo McRoberts
 .\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
 .\"      Date: 05/02/2014
@@ -7,7 +7,7 @@
 .\"    Source: Linked Open Data client
 .\"  Language: English
 .\"
-.TH "LOD_WORLD" "3" "05/02/2014" "Linked Open Data client" "Library functions"
+.TH "LOD_STORAGE" "3" "05/02/2014" "Linked Open Data client" "Library functions"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -28,7 +28,7 @@
 .\" * MAIN CONTENT STARTS HERE *
 .\" -----------------------------------------------------------------
 .SH "NAME"
-lod_world \- Obtain a librdf world associated with a context
+lod_storage \- Obtain a librdf storage associated with a context
 .SH "SYNOPSIS"
 .sp
 .ft B
@@ -36,27 +36,27 @@ lod_world \- Obtain a librdf world associated with a context
 #include <liblod\&.h>
 .fi
 .ft
-.HP \w'librdf_world\ *lod_world('u
-.BI "librdf_world *lod_world(LODCONTEXT\ *" "context" ");"
+.HP \w'librdf_storage\ *lod_storage('u
+.BI "librdf_storage *lod_storage(LODCONTEXT\ *" "context" ");"
 .SH "DESCRIPTION"
 .PP
 
-\fBlod_world\fR
+\fBlod_storage\fR
 obtains the
-\fBlibrdf_world\fR
+\fBlibrdf_storage\fR
 which is associated with
 \fIcontext\fR\&.
 .SH "RETURN VALUE"
 .PP
 Upon success,
-\fBlod_world\fR
+\fBlod_storage\fR
 returns the
-\fBlibrdf_world\fR
+\fBlibrdf_storage\fR
 object associated with
 \fIcontext\fR\&.
 .PP
 If an error occurs,
-\fBlod_world\fR
+\fBlod_storage\fR
 returns
 \fBNULL\fR\&.
 \fBlod_errmsg\fR
@@ -64,8 +64,8 @@ can be used to obtain a description of the error condition\&.
 .SH "SEE ALSO"
 .PP
 
-\m[blue]\fB\fBlod_set_world\fR(3)\fR\m[],
-\m[blue]\fB\fBlod_storage\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_set_storage\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_world\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_model\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_curl\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_errmsg\fR(3)\fR\m[],

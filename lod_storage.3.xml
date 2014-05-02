@@ -74,6 +74,7 @@
 	<title>See also</title>
 
 	<para>
+	  <link xlink:href="lod_set_storage.3"><citerefentry><refentrytitle>lod_set_storage</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_world.3"><citerefentry><refentrytitle>lod_world</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_model.3"><citerefentry><refentrytitle>lod_model</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_curl.3"><citerefentry><refentrytitle>lod_curl</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
