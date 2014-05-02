@@ -81,6 +81,16 @@
 		<seg><link xlink:href="lod_resolve.3"><function>lod_resolve</function></link></seg>
 		<seg>Attempt to resolve a Linked Open Data URI</seg>
 	  </seglistitem>
+
+	  <seglistitem>
+		<seg><link xlink:href="lod_locate.3"><function>lod_locate</function></link></seg>
+		<seg>Locate triples about a subject already present in a context's model</seg>
+	  </seglistitem>
+
+	  <seglistitem>
+		<seg><link xlink:href="lod_fetch.3"><function>lod_fetch</function></link></seg>
+		<seg>Resolve a Linked Open Data URI, fetching the data irrespective of whether the subject exists in the context's model</seg>
+	  </seglistitem>
 	  
 	  <seglistitem>
 		<seg><link xlink:href="lod_destroy.3"><function>lod_destroy</function></link></seg>

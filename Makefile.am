@@ -53,7 +53,8 @@ example_1_LDADD = liblod.la \
 	@LIBRDF_LOCAL_LIBS@ @LIBRDF_LIBS@
 
 notrans_dist_man_MANS = liblod.3 \
-	lod_create.3 lod_destroy.3 lod_resolve.3 \
+	lod_create.3 lod_destroy.3 \
+	lod_resolve.3 lod_locate.3 lod_fetch.3 \
 	lod_error.3 lod_errmsg.3 \
 	lod_instance_destroy.3 lod_instance_exists.3 lod_instance_stream.3 \
 	lod_instance_uri.3 lod_instance_primarytopic.3

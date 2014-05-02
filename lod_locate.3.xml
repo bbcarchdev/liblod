@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<refentry version="5.0" xml:lang="en" xml:id="lod_locate-3" xmlns="http://docbook.org/ns" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <info>
+	<authorgroup>
+	    <author>
+		  <personname>
+			  <firstname>Mo</firstname>
+			    <surname>McRoberts</surname>
+		  </personname>
+		  <affiliation>
+			  <org>
+				<orgname>BBC</orgname>
+				<orgdiv>Archive Development</orgdiv>
+				<uri>http://www.bbc.co.uk/archive/</uri>
+			  </org>
+		  </affiliation>
+		</author>
+	</authorgroup>
+	<copyright>
+	    <year>2014</year>
+		  <holder>BBC</holder>
+	</copyright>
+  </info>
+
+  <refmeta>
+	<refentrytitle>lod_locate</refentrytitle>
+	<manvolnum>3</manvolnum>
+	<refmiscinfo class="source">Linked Open Data client</refmiscinfo>
+	<refmiscinfo class="manual">Library functions</refmiscinfo>
+  </refmeta>
+  
+  <refnamediv>
+	<refname>lod_locate</refname>
+	<refpurpose>Locate data about a subject within a model's context</refpurpose>
+  </refnamediv>
+  
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcsynopsisinfo>#include &lt;liblod.h&gt;</funcsynopsisinfo>
+	  <funcprototype>
+		<funcdef>LODINSTANCE *<function>lod_locate</function></funcdef>
+		<paramdef>LODCONTEXT *<parameter>context</parameter></paramdef>
+		<paramdef>const char *<parameter>uri</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+	<title>Description</title>
+	<para>
+	  <function>lod_locate</function> attempts to locate triples where
+	  <parameter>uri</parameter> is the subject URI within the model
+	  associated with <parameter>context</parameter>. In contrast with
+	  <function>lod_fetch</function> and <function>lod_resolve</function>,
+	  <function>lod_locate</function> will make no attempt to fetch
+	  additional data if no triples where <parameter>uri</parameter> is
+	  the subject are present in the model.
+	</para>
+  </refsect1>
+
+  <refsect1>
+	<title>Return value</title>
+
+	<para>
+	  Upon success, <function>lod_locate</function> returns a new
+	  <type>LODINSTANCE</type>, which should be later freed using
+	  <function>lod_instance_destroy</function>.
+	</para>
+
+	<para>
+	  If an error occurs, or <parameter>uri</parameter> was not
+	  a subject of any triple in the context's model,
+	  <function>lod_locate</function> returns <constant>NULL</constant>.	  
+	</para>
+
+	<para>
+	  Use <function>lod_error</function> to determine whether an error
+	  occurred, or whether the subject does not exist in the data. If an
+	  error does occur, you can use <function>lod_errmsg</function> to
+	  obtain a description of the error condition.
+	</para>
+  </refsect1>
+
+  <refsect1>
+	<title>See also</title>
+
+	<para>
+	  <link xlink:href="lod_resolve.3"><citerefentry><refentrytitle>lod_resolve</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_fetch.3"><citerefentry><refentrytitle>lod_fetch</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_create.3"><citerefentry><refentrytitle>lod_create</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_error.3"><citerefentry><refentrytitle>lod_error</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_errmsg.3"><citerefentry><refentrytitle>lod_errmsg</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_instance_exists.3"><citerefentry><refentrytitle>lod_instance_exists</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_instance_stream.3"><citerefentry><refentrytitle>lod_instance_stream</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="http://librdf.org/docs/api/redland-parser.html#librdf-new-parser"><citerefentry><refentrytitle>librdf_parser_create</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.
+	</para>
+  </refsect1>
+
+</refentry>
