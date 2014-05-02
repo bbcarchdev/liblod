@@ -20,7 +20,8 @@ XML2HTMLFLAGS = \
     --param "html.ie78css" "'http://bbcarchdev.github.io/painting-by-numbers/ie78.css'"
 
 dist_noinst_DATA = local.css index.html \
-	lod_create.3.html lod_destroy.3.html lod_resolve.3.html \
+	lod_create.3.html lod_destroy.3.html \
+	lod_resolve.3.html lod_locate.3.html lod_fetch.3.html \
 	lod_error.3.html lod_errmsg.3.html \
 	lod_instance_destroy.3.html lod_instance_exists.3.html \
 	lod_instance_stream.3.html lod_instance_uri.3.html \
@@ -36,6 +37,12 @@ lod_destroy.3.html: $(top_srcdir)/lod_destroy.3.xml
 	$(XML2HTML) $<
 
 lod_resolve.3.html: $(top_srcdir)/lod_resolve.3.xml
+	$(XML2HTML) $<
+
+lod_fetch.3.html: $(top_srcdir)/lod_fetch.3.xml
+	$(XML2HTML) $<
+
+lod_locate.3.html: $(top_srcdir)/lod_locate.3.xml
 	$(XML2HTML) $<
 
 lod_error.3.html: $(top_srcdir)/lod_error.3.xml

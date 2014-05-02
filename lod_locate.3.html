@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+			<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+			<meta charset="utf-8" />
+			<!--[if lt IE 9]><script>document.createElement('header');document.createElement('nav');document.createElement('section');document.createElement('article');document.createElement('aside');document.createElement('footer');</script><![endif]-->
+		<title>lod_locate</title><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/style.css"/><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/print.css" media="print"/><link rel="stylesheet" type="text/css" href="http://cloud.typography.com/6699852/732262/css/fonts.css"/><link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Roboto:300,500,300italic,500italic|Inconsolata|Arapey"/><link rel="stylesheet" type="text/css" href="local.css"/><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1"/><!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="http://bbcarchdev.github.io/painting-by-numbers/ie78.css" /><![endif]-->
+	</head>
+<body class="refentry"><header><nav class="global"><div class="inner"><ul>
+		<li class="logo"><a href="http://bbcarchdev.github.io/res/"><abbr title="Research &amp; Education Space">RES</abbr></a></li>
+		<li><a href="http://bbcarchdev.github.io/res/guides">Guides</a></li>
+		<li><a href="http://acropolis.org.uk">Developer API</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/tools">Tools</a></li>
+		<li><a href="http://bbcarchdev.github.io/res/code">Source code</a></li>
+	</ul></div></nav>
+		<div class="masthead"></div>
+		<h1>lod_locate</h1><h2>Locate data about a subject within a model's context</h2></header><article>
+  
+
+  
+  
+  
+  
+  <section class="refsynopsisdiv"><h1>Synopsis</h1>
+	<div class="funcsynopsis">
+	  <p class="funcsynopsisinfo"><code>#include &lt;liblod.h&gt;</code></p>
+	  <p class="funcprototype"><code>LODINSTANCE *<code class="function">lod_locate</code>(LODCONTEXT *<code class="parameter">context</code>, const char *<code class="parameter">uri</code>);</code></p>
+	</div>
+  </section>
+
+  <section class="refsect1"><h1>Description</h1>
+	
+	<p>
+	  <code class="function">lod_locate</code> attempts to locate triples where
+	  <code class="parameter">uri</code> is the subject URI within the model
+	  associated with <code class="parameter">context</code>. In contrast with
+	  <code class="function">lod_fetch</code> and <code class="function">lod_resolve</code>,
+	  <code class="function">lod_locate</code> will make no attempt to fetch
+	  additional data if no triples where <code class="parameter">uri</code> is
+	  the subject are present in the model.
+	</p>
+  </section>
+
+  <section class="refsect1"><h1>Return value</h1>
+	
+
+	<p>
+	  Upon success, <code class="function">lod_locate</code> returns a new
+	  <code class="type">LODINSTANCE</code>, which should be later freed using
+	  <code class="function">lod_instance_destroy</code>.
+	</p>
+
+	<p>
+	  If an error occurs, or <code class="parameter">uri</code> was not
+	  a subject of any triple in the context's model,
+	  <code class="function">lod_locate</code> returns <code class="constant">NULL</code>.	  
+	</p>
+
+	<p>
+	  Use <code class="function">lod_error</code> to determine whether an error
+	  occurred, or whether the subject does not exist in the data. If an
+	  error does occur, you can use <code class="function">lod_errmsg</code> to
+	  obtain a description of the error condition.
+	</p>
+  </section>
+
+  <section class="refsect1"><h1>See also</h1>
+	
+
+	<p>
+	  <a href="lod_resolve.3">lod_resolve</a>,
+	  <a href="lod_fetch.3">lod_fetch</a>,
+	  <a href="lod_create.3">lod_create</a>,
+	  <a href="lod_error.3">lod_error</a>,
+	  <a href="lod_errmsg.3">lod_errmsg</a>,
+	  <a href="lod_instance_exists.3">lod_instance_exists</a>,
+	  <a href="lod_instance_stream.3">lod_instance_stream</a>,
+	  <a href="http://librdf.org/docs/api/redland-parser.html#librdf-new-parser">librdf_parser_create</a>.
+	</p>
+  </section>
+
+</article></body>
+</html>
+
