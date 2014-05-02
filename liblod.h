@@ -140,6 +140,16 @@ const char *lod_accept(LODCONTEXT *context);
 /* Resolve a LOD URI, potentially fetching data */
 LODINSTANCE *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode);
 
+/* Attempt to locate a subject within the context's model, but don't
+ * try to fetch it all.
+ */
+LODINSTANCE *lod_locate(LODCONTEXT *context, const char *uri);
+
+/* Fetch data about a subject, fetching the data about it (irrespective of
+ * whether it already exists in the model.
+ */
+LODINSTANCE *lod_fetch(LODCONTEXT *context, const char *uri);
+
 /* Free an instance returned by lod_resolve() -- note that the triples remain
  * part of the context until it is destroyed, and so a subsequent call to
  * lod_resolve(context, "uri", LOD_FETCH_NEVER); would return a new subject

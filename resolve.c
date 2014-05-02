@@ -21,6 +21,159 @@
 
 #include "p_liblod.h"
 
+/* Attempt to locate a subject within the context's model, but don't
+ * try to fetch it all.
+ */
+LODINSTANCE *
+lod_locate(LODCONTEXT *context, const char *uri)
+{
+	LODINSTANCE *inst;
+	librdf_node *node;
+	librdf_statement *query;
+	librdf_world *world;
+	librdf_model *model;
+	char *p;
+
+	/* Duplicate the URI first, in case it's actually a string belonging
+	 * to the context itself which would get deallocated by lod_reset_()
+	 */
+	p = strdup(uri);
+	if(!p)
+	{
+		lod_set_error_(context, strerror(errno));
+		return NULL;
+	}		
+	lod_reset_(context);
+	context->subject = p;
+	world = lod_world(context);
+	if(!world)
+	{
+		lod_set_error_(context, "failed to obtain librdf world from context");
+		return NULL;
+	}
+	model = lod_model(context);
+	if(!model)
+	{
+		lod_set_error_(context, "failed to obtain librdf model from context");
+		return NULL;
+	}
+	/* Attempt to locate triples about the subject */
+	node = librdf_new_node_from_uri_string(world, (const unsigned char *) uri);
+	if(!node)
+	{
+		lod_set_error_(context, "failed to create new URI node");
+		return NULL;
+	}		
+	query = librdf_new_statement_from_nodes(world, node, NULL, NULL);
+	/* Note: node becomes owned by the statement, and freed upon error */
+	if(!query)
+	{
+		lod_set_error_(context, "failed to create new librdf statement");
+		return NULL;
+	}
+	inst = lod_instance_create_(context, query, node);
+	if(!inst)
+	{
+		librdf_free_statement(query);
+		return NULL;
+	}	
+	if(!lod_instance_exists(inst))
+	{
+		/* No error has occurred, but the subject isn't present in the
+		 * model.
+		 */
+		lod_instance_destroy(inst);
+		context->error = 0;
+		return NULL;
+	}
+	return inst;
+}
+
+/* Fetch data about a subject, fetching the data about it (irrespective of
+ * whether it already exists in the model.
+ */
+LODINSTANCE *
+lod_fetch(LODCONTEXT *context, const char *uri)
+{
+	LODINSTANCE *inst;
+	librdf_node *node;
+	librdf_statement *query;
+	librdf_world *world;
+	librdf_model *model;
+	char *p;
+	int i;
+
+	/* Duplicate the URI first, in case it's actually a string belonging
+	 * to the context itself which would get deallocated by lod_reset_()
+	 */
+	p = strdup(uri);
+	if(!p)
+	{
+		lod_set_error_(context, strerror(errno));
+		return NULL;
+	}		
+	lod_reset_(context);
+	context->subject = p;
+	world = lod_world(context);
+	if(!world)
+	{
+		lod_set_error_(context, "failed to obtain librdf world from context");
+		return NULL;
+	}
+	model = lod_model(context);
+	if(!model)
+	{
+		lod_set_error_(context, "failed to obtain librdf model from context");
+		return NULL;
+	}
+	if(lod_fetch_(context))
+	{
+		lod_set_error_(context, "failed to fetch resource");
+		/* An error ocurred while actually performing the fetch operation */
+		return NULL;
+	}	
+	inst = NULL;
+	/* Now that we've successfully fetched the URI, Attempt to locate
+	 * triples about the subject
+	 */	
+	for(i = 0; i < context->nsubjects; i++)
+	{
+		if(inst)
+		{
+			lod_instance_destroy(inst);
+		}		
+		context->error = 0;
+		node = librdf_new_node_from_uri_string(world, (const unsigned char *) context->subjects[i]);
+		if(!node)
+		{
+			lod_set_error_(context, "failed to create librdf URI node");
+			return NULL;
+		}
+		query = librdf_new_statement_from_nodes(world, node, NULL, NULL);
+		/* Note: node becomes owned by the statement, and freed upon error */
+		if(!query)
+		{
+			lod_set_error_(context, "failed to create librdf query statement");
+			return NULL;
+		}
+		inst = lod_instance_create_(context, query, node);
+		if(!inst)
+		{
+			librdf_free_statement(query);
+			return NULL;
+		}
+		if(lod_instance_exists(inst))
+		{
+			return inst;
+		}
+	}
+	/* No error occurred, but the fetched data didn't describe the subject
+	 * we were looking for.
+	 */
+	context->error = 0;
+	return inst;	
+}
+
 /* Resolve a LOD URI, potentially fetching data */
 LODINSTANCE *
 lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
