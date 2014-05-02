@@ -52,6 +52,7 @@ lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl)
 	ctx = htmlNewParserCtxt();
 	if(!ctx)
 	{
+		lod_set_error_(context, "failed to create new HTML parsing context");
 		return -1;
 	}
 	xmlSetGenericErrorFunc(ctx, lod_html_xml_generic_error_);
@@ -93,6 +94,12 @@ lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl)
 				dest = uri_create_str((const char *) href, base);
 			}
 		}
+		/* Ensure that any condition triggered by librdf_parser_guess_name2()
+		 * isn't misleadingly returned to the application.
+		 */
+		context->error = 0;
+		free(context->errmsg);
+		context->errmsg = NULL;
 		xmlFree(rel);
 		xmlFree(type);
 		xmlFree(href);

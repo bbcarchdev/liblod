@@ -170,7 +170,7 @@ lod_fetch_(LODCONTEXT *context)
 				r = lod_html_discover_(context, uri, &newuri);
 				if(r < 0)
 				{
-					lod_set_error_(context, "failed to parse HTML for autodiscovery");
+					lod_set_error_(context, "failed to parse HTML for RDF autodiscovery");
 					break;
 				}
 				else if(r == 0)
