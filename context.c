@@ -299,7 +299,6 @@ lod_status(LODCONTEXT *context)
 int
 lod_error(LODCONTEXT *context)
 {
-	context->error = 0;
 	return context->error;
 }
 
@@ -307,7 +306,6 @@ lod_error(LODCONTEXT *context)
 const char *
 lod_errmsg(LODCONTEXT *context)
 {
-	context->error = 0;
 	if(!context->error)
 	{
 		return NULL;
