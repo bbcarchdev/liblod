@@ -206,8 +206,9 @@ main(void)
 	<title>See also</title>
 
 	<para>
+	  <link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_create.3"><citerefentry><refentrytitle>lod_create</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
-	<link xlink:href="lod_errmsg.3"><citerefentry><refentrytitle>lod_errmsg</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_errmsg.3"><citerefentry><refentrytitle>lod_errmsg</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_instance_exists.3"><citerefentry><refentrytitle>lod_instance_exists</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_instance_stream.3"><citerefentry><refentrytitle>lod_instance_stream</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="http://librdf.org/docs/api/redland-parser.html#librdf-new-parser"><citerefentry><refentrytitle>librdf_parser_create</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.

@@ -83,6 +83,7 @@
   
   <refsect1>
 	<title>See also</title>
+	<link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	<link xlink:href="lod_resolve.3"><citerefentry><refentrytitle>lod_resolve</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.
   </refsect1>
   

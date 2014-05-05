@@ -82,6 +82,7 @@
   
   <refsect1>
 	<title>See also</title>
+	<link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	<link xlink:href="lod_resolve.3"><citerefentry><refentrytitle>lod_resolve</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	<link xlink:href="lod_error.3"><citerefentry><refentrytitle>lod_error</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	<link xlink:href="lod_instance_destroy.3"><citerefentry><refentrytitle>lod_instance_destroy</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.

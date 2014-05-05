@@ -72,6 +72,7 @@
 	<title>See also</title>
 
 	<para>
+	  <link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_destroy.3"><citerefentry><refentrytitle>lod_destroy</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_resolve.3"><citerefentry><refentrytitle>lod_resolve</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="http://curl.haxx.se/libcurl/c/curl_global_init.html"><citerefentry><refentrytitle>curl_global_init</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.

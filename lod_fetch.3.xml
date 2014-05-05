@@ -92,6 +92,7 @@
 	<title>See also</title>
 
 	<para>
+	  <link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_locate.3"><citerefentry><refentrytitle>lod_locate</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_resolve.3"><citerefentry><refentrytitle>lod_resolve</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
 	  <link xlink:href="lod_create.3"><citerefentry><refentrytitle>lod_create</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
