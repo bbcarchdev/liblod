@@ -25,7 +25,7 @@
   <section class="refsynopsisdiv"><h1>Synopsis</h1>
 	<div class="funcsynopsis">
 	  <p class="funcsynopsisinfo"><code>#include &lt;liblod.h&gt;</code></p>
-	  <p class="funcprototype"><code>LODINSTANCE *<code class="function">lod_resolve</code>(LODCONTEXT *<code class="parameter">context</code>, const char *<code class="parameter">uri</code>, LODFETCH <code class="parameter">mode</code>);</code></p>
+	  <p class="funcprototype"><code>LODINSTANCE *<code class="function">lod_resolve</code>(LODCONTEXT *<code class="parameter">context</code>, const char *<code class="parameter">uri</code>);</code></p>
 	</div>
   </section>
 
@@ -40,34 +40,25 @@
 	</p>
 	
 	<p>
-	  The behaviour of <code class="function">lod_resolve</code> depends upon the
-	  value of the <code class="parameter">mode</code> parameter:
+	  In contrast to <code class="function">lod_fetch</code> (which will attempt
+	  a network fetch regardless of the existing contents of the context’s
+	  model), and <code class="function">lod_locate</code> (which will never attempt
+	  a network fetch), the behaviour of <code class="function">lod_resolve</code>
+	  is conditional depending upon whether <code class="parameter">uri</code> is
+	  the subject of a triple within the context’s model.
+	</p>
+
+	<p>
+	  If such a triple is present, <code class="function">lod_resolve</code> behaves
+	  as <code class="function">lod_locate</code>, returning an instance whose subject
+	  is <code class="parameter">uri</code>.
 	</p>
 	
-	<dl>
-		<dt><code class="constant">FETCH_NEVER</code></dt>
-		<dd>
-			Do not perform any network (HTTP) requests. If the subject
-			identified by <code class="parameter">uri</code> already exists in
-			the model, the returned instance will reference it.
-		  </dd>
-	  
-		<dt><code class="constant">FETCH_ALWAYS</code></dt>
-		<dd>
-			Resolve the URI by performing network (HTTP) requests, even if
-			triples whose subject is the supplied <code class="parameter">uri</code>
-			already exist in the model.
-		  </dd>
-	  
-		<dt><code class="constant">FETCH_ABSENT</code></dt>
-		<dd>
-			If triples whose subject is the supplied
-			<code class="parameter">uri</code>, simply return a
-			<code class="type">LODINSTANCE</code> referring to those triples. Otherwise,
-			attempt to perform network (HTTP) requests to obtain data
-			describing the subject (as with <code class="constant">FETCH_ALWAYS</code>).
-		  </dd>
-	  </dl>
+	<p>
+	  If no such triple could be found, <code class="function">lod_resolve</code>
+	  behaves as though <code class="function">lod_fetch</code> had been called
+	  instead.
+	</p>
   </section>
 
   <section class="refsect1"><h1>Return value</h1>
@@ -77,100 +68,46 @@
 	  Upon success, <code class="function">lod_resolve</code> returns a new
 	  <code class="type">LODINSTANCE</code>, which should be later freed using
 	  <code class="function">lod_instance_destroy</code>.
+	</p>	
+
+	<p>
+	  If an error occurs, or <code class="parameter">uri</code> was not
+	  a subject of any triple in the data after the fetch completes,
+	  <code class="function">lod_resolve</code> returns <code class="constant">NULL</code>.	  
 	</p>
 
 	<p>
-	  If an error occurs, <code class="function">lod_resolve</code> returns
-	  <code class="constant">NULL</code>. A description of the error condition
-	  can be obtained using <code class="function">lod_errmsg</code>.
+	  Use <code class="function">lod_error</code> to determine whether an error
+	  occurred, or whether the subject does not exist in the data. If an
+	  error does occur, you can use <code class="function">lod_errmsg</code> to
+	  obtain a description of the error condition.
 	</p>
   </section>
 
   <section class="refsect1"><h1>Example</h1>
 	
-	<pre class="code c"><code>#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;string.h&gt;
-#include &lt;errno.h&gt;
-#include &lt;unistd.h&gt;
-#include &lt;liblod.h&gt;
+	<pre class="code c"><code>LODCONTEXT *ctx;
+LODINSTANCE *inst;
 
-int
-main(void)
+ctx = lod_create();
+inst = lod_resolve(ctx, "http://www.dbpedialite.org/things/22308#id");
+if(!inst)
 {
-	LODCONTEXT *ctx;
-	LODINSTANCE *inst;
-	librdf_world *world;
-	librdf_serializer *serializer;
-	librdf_stream *stream;
-
-	ctx = lod_create();
-	if(!ctx)
+	if(lod_error(ctx))
 	{
-		fprintf(stderr, "failed to create liblod context: %s\n", strerror(errno));
-		exit(EXIT_FAILURE);
+		/* An error occurred */
 	}
-	world = lod_world(ctx);
-	if(!world)
+	else
 	{
-		fprintf(stderr, "failed to obtain librdf_world for context: %s\n", lod_errmsg(ctx));
-		lod_destroy(ctx);
-		exit(EXIT_FAILURE);
+		/* No error, but the subject wasn't present */
 	}
-	/* Fetch data about the city of Oxford */
-	inst = lod_resolve(ctx, "http://www.dbpedialite.org/things/22308#id", LOD_FETCH_ABSENT);
-	if(!inst)
-	{
-		fprintf(stderr, "failed to obtain data about Oxford: %s\n", lod_errmsg(ctx));
-		lod_destroy(ctx);
-		exit(EXIT_FAILURE);
-	}
-	/* Check that the returned data does actually describe the subject we
-	 * requested.
-	 */
-	if(!lod_instance_exists(inst))
-	{
-		fprintf(stderr, "no data about Oxford was found in the returned data\n");
-		lod_instance_destroy(inst);
-		lod_destroy(ctx);
-		exit(EXIT_FAILURE);
-	}
-	/* Obtain a librdf_stream */
-	stream = lod_instance_stream(inst);
-	if(!stream)
-	{
-		fprintf(stderr, "failed to obtain librdf stream for the instance\n");
-		lod_instance_destroy(inst);
-		lod_destroy(ctx);
-		exit(EXIT_FAILURE);
-	}
-	/* Serialise the data as Turtle */
-	serializer = librdf_new_serializer(world, "turtle", NULL, NULL);
-	if(!serializer)
-	{
-		fprintf(stderr, "failed to create serializer: %s\n", lod_errmsg(ctx));
-		librdf_free_stream(stream);
-		lod_instance_destroy(inst);
-		lod_destroy(ctx);
-		exit(EXIT_FAILURE);
-	}
-	if(librdf_serializer_serialize_stream_to_file_handle(serializer, stdout, NULL, stream))
-	{
-		fprintf(stderr, "failed to serialize stream: %s\n", lod_errmsg(ctx));
-		librdf_free_serializer(serializer);
-		librdf_free_stream(stream);
-		lod_instance_destroy(inst);
-		lod_destroy(ctx);
-		exit(EXIT_FAILURE);
-	}
-	librdf_free_serializer(serializer);
-	librdf_free_stream(stream);
-	/* Release resources */
-	lod_instance_destroy(inst);
-	lod_destroy(ctx);
-	return 0;
 }
-</code></pre>
+else
+{
+	/* Triples found */
+	lod_instance_destroy(inst);
+}
+lod_destroy(ctx);</code></pre>
   </section>
 
   <section class="refsect1"><h1>See also</h1>
@@ -179,8 +116,11 @@ main(void)
 	<p>
 	  <a href="http://bbcarchdev.github.io/liblod/">liblod</a>,
 	  <a href="lod_create.3">lod_create</a>,
+	  <a href="lod_error.3">lod_error</a>,
 	  <a href="lod_errmsg.3">lod_errmsg</a>,
-	  <a href="lod_instance_exists.3">lod_instance_exists</a>,
+	  <a href="lod_locate.3">lod_locate</a>,
+	  <a href="lod_fetch.3">lod_fetch</a>,
+	  <a href="lod_instance_destroy.3">lod_instance_destroy</a>,
 	  <a href="lod_instance_stream.3">lod_instance_stream</a>,
 	  <a href="http://librdf.org/docs/api/redland-parser.html#librdf-new-parser">librdf_parser_create</a>.
 	</p>
