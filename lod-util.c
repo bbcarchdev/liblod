@@ -28,10 +28,17 @@
 
 #include "liblod.h"
 
-static LODCONTEXT *context;
-static LODFETCH mode, flags;
+#define LOD_FETCH_ALWAYS                0
+#define LOD_FETCH_ABSENT                1
+#define LOD_FETCH_NEVER                 2
+#define LOD_FETCH_MODE                  0x000f
+#define LOD_FETCH_FLAGS                 0xf000
+#define LOD_FETCH_PRIMARYTOPIC          0x1000
 
-static int resolve_uri(const char *uri, LODFETCH mode);
+static LODCONTEXT *context;
+static int mode, flags;
+
+static int resolve_uri(const char *uri, int mode);
 static int process_command(const char *command);
 static librdf_serializer *get_serializer(void);
 static int perform_query(const char *query);
@@ -112,20 +119,34 @@ main(int argc, char **argv)
 }
 
 static int
-resolve_uri(const char *uri, LODFETCH mode)
+resolve_uri(const char *uri, int mode)
 {
 	LODINSTANCE *instance;
 	librdf_serializer *serializer;
 	librdf_stream *stream;
 	const char *s;
 
-	instance = lod_resolve(context, uri, mode);
+	switch(mode & LOD_FETCH_MODE)
+	{
+	case LOD_FETCH_NEVER:
+		instance = lod_locate(context, uri);
+		break;
+	case LOD_FETCH_ABSENT:
+		instance = lod_resolve(context, uri);
+		break;
+	case LOD_FETCH_ALWAYS:
+		instance = lod_fetch(context, uri);
+	}
 	if(!instance)
 	{
-		fprintf(stderr, "failed to resolve <%s>: %s\n", uri, lod_errmsg(context));
-		return -1;
+		if(lod_error(context))
+		{
+			fprintf(stderr, "failed to resolve <%s>: %s\n", uri, lod_errmsg(context));
+			return -1;
+		}
+		printf("# subject is not present in dataset\n");
 	}
-	if(lod_instance_exists(instance) > 0)
+	else
 	{
 		stream = lod_instance_stream(instance);
 		serializer = get_serializer();
@@ -133,14 +154,6 @@ resolve_uri(const char *uri, LODFETCH mode)
 		librdf_free_serializer(serializer);
 		librdf_free_stream(stream);
 		printf("# subject URI is <%s>\n", librdf_uri_as_string(lod_instance_uri(instance)));
-	}
-	else if(lod_error(context))
-	{
-		fprintf(stderr, "failed to determine if subject is present: %s\n", lod_errmsg(context));
-	}
-	else
-	{
-		printf("# subject is not present in dataset\n");
 	}
 	if((s = lod_subject(context)))
 	{

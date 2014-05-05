@@ -28,20 +28,18 @@ main(void)
 		exit(EXIT_FAILURE);
 	}
 	/* Fetch data about the city of Oxford */
-	inst = lod_resolve(ctx, "http://www.dbpedialite.org/things/22308#id", LOD_FETCH_ABSENT);
+	inst = lod_fetch(ctx, "http://www.dbpedialite.org/things/22308#id");
 	if(!inst)
 	{
-		fprintf(stderr, "failed to obtain data about Oxford: %s\n", lod_errmsg(ctx));
-		lod_destroy(ctx);
-		exit(EXIT_FAILURE);
-	}
-	/* Check that the returned data does actually describe the subject we
-	 * requested.
-	 */
-	if(!lod_instance_exists(inst))
-	{
-		fprintf(stderr, "no data about Oxford was found in the returned data\n");
-		lod_instance_destroy(inst);
+		if(lod_error(ctx))
+		{
+			fprintf(stderr, "failed to obtain data about Oxford: %s\n", lod_errmsg(ctx));
+		}
+		else
+		{
+			fprintf(stderr, "no valid data about the Oxford was present in the response\n");
+			librdf_model_print(lod_model(ctx), stdout);
+		}
 		lod_destroy(ctx);
 		exit(EXIT_FAILURE);
 	}

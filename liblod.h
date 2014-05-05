@@ -24,23 +24,6 @@
 typedef struct lod_context_struct LODCONTEXT;
 typedef struct lod_instance_struct LODINSTANCE;
 
-/* Flags which alter how lod_resolve() behaves */
-typedef enum
-{
-	/* Never fetch data, even if it doesn't exist in the model */
-	LOD_FETCH_NEVER = 0,
-	/* Fetch data only if the subject isn't present in the model */
-	LOD_FETCH_ABSENT = 1,
-	/* Always fetch data, even if the subject is already present */
-	LOD_FETCH_ALWAYS = 2,
-	/* Mask for fetch modes */
-	LOD_FETCH_MODE = 0x000f,
-	/* Mask for flags */
-	LOD_FETCH_FLAGS = 0xf000,
-	/* Follow foaf:primaryTopic, if present */
-	LOD_FETCH_PRIMARYTOPIC = 0x1000
-} LODFETCH;
-
 /* Create a new LOD context */
 LODCONTEXT *lod_create(void);
 
@@ -138,7 +121,7 @@ const char *lod_useragent(LODCONTEXT *context);
 const char *lod_accept(LODCONTEXT *context);
 
 /* Resolve a LOD URI, potentially fetching data */
-LODINSTANCE *lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode);
+LODINSTANCE *lod_resolve(LODCONTEXT *context, const char *uri);
 
 /* Attempt to locate a subject within the context's model, but don't
  * try to fetch it all.

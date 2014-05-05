@@ -21,6 +21,8 @@
 
 #include "p_liblod.h"
 
+static LODINSTANCE *lod_locate_subject_(LODCONTEXT *context, librdf_world *world);
+
 /* Attempt to locate a subject within the context's model, but don't
  * try to fetch it all.
  */
@@ -95,13 +97,9 @@ lod_locate(LODCONTEXT *context, const char *uri)
 LODINSTANCE *
 lod_fetch(LODCONTEXT *context, const char *uri)
 {
-	LODINSTANCE *inst;
-	librdf_node *node;
-	librdf_statement *query;
 	librdf_world *world;
 	librdf_model *model;
 	char *p;
-	int i;
 
 	/* Duplicate the URI first, in case it's actually a string belonging
 	 * to the context itself which would get deallocated by lod_reset_()
@@ -131,7 +129,104 @@ lod_fetch(LODCONTEXT *context, const char *uri)
 		lod_set_error_(context, "failed to fetch resource");
 		/* An error ocurred while actually performing the fetch operation */
 		return NULL;
-	}	
+	}
+	return lod_locate_subject_(context, world);
+}
+
+/* Resolve a LOD URI, fetching data if the URI is not a subject in the
+ * context's model.
+ */
+LODINSTANCE *
+lod_resolve(LODCONTEXT *context, const char *uri)
+{
+	LODINSTANCE *inst;
+	librdf_stream *stream;
+	librdf_world *world;
+	librdf_model *model;	
+	librdf_node *node;
+	librdf_statement *query;
+	char *p;
+
+	context->error = 0;
+	/* Duplicate the URI first, in case it's actually a string belonging
+	 * to the context itself which would get deallocated by lod_reset_()
+	 */
+	p = strdup(uri);
+	if(!p)
+	{
+		lod_set_error_(context, strerror(errno));
+		return NULL;
+	}		
+	lod_reset_(context);
+	context->subject = p;
+	world = lod_world(context);
+	if(!world)
+	{
+		context->error = 1;
+		return NULL;
+	}
+	model = lod_model(context);
+	if(!model)
+	{
+		context->error = 1;
+		return NULL;
+	}
+	/* Attempt to locate triples about the subject */
+	node = librdf_new_node_from_uri_string(world, (const unsigned char *) uri);
+	if(!node)
+	{
+		lod_set_error_(context, "failed to create librdf URI node");
+		return NULL;
+	}		
+	query = librdf_new_statement_from_nodes(world, node, NULL, NULL);
+	/* Note: node becomes owned by the statement, and freed upon error */
+	if(!query)
+	{
+		lod_set_error_(context, "failed to create librdf query statement");
+		return NULL;
+	}
+	stream = librdf_model_find_statements(model, query);
+	if(!stream)
+	{
+		lod_set_error_(context, "failed to create librdf stream for query");
+		librdf_free_statement(query);
+		return NULL;
+	}
+	if(!librdf_stream_end(stream))
+	{
+		/* The subject exists in the model */
+		librdf_free_stream(stream);
+		inst = lod_instance_create_(context, query, node);
+		if(!inst)
+		{
+			/* Failed to create LODINSTANCE */
+			librdf_free_statement(query);
+			return NULL;
+		}
+		return inst;
+	}
+	/* The subject is not present in the model */
+	librdf_free_statement(query);
+	librdf_free_stream(stream);
+	if(lod_fetch_(context))
+	{
+		/* An error occurred during the fetch itself */
+		return NULL;
+	}
+	return lod_locate_subject_(context, world);
+}
+
+/* Following a fetch operation, loop through the subject list and return
+ * a LODINSTANCE for the first one which is found
+ */
+static LODINSTANCE *
+lod_locate_subject_(LODCONTEXT *context, librdf_world *world)
+{
+	LODINSTANCE *inst;
+	int i;
+	librdf_node *node;
+	librdf_statement *query;
+
 	inst = NULL;
 	/* Now that we've successfully fetched the URI, Attempt to locate
 	 * triples about the subject
@@ -173,149 +268,3 @@ lod_fetch(LODCONTEXT *context, const char *uri)
 	context->error = 0;
 	return inst;	
 }
-
-/* Resolve a LOD URI, potentially fetching data */
-LODINSTANCE *
-lod_resolve(LODCONTEXT *context, const char *uri, LODFETCH fetchmode)
-{
-	LODINSTANCE *inst, *primary;
-	librdf_stream *stream;
-	librdf_world *world;
-	librdf_model *model;	
-	librdf_node *node;
-	librdf_statement *query;
-	char *p;
-	int i;
-	LODFETCH mode;
-
-	context->error = 0;
-	mode = fetchmode & LOD_FETCH_MODE;
-	/* Duplicate the URI first, in case it's actually a string belonging
-	 * to the context itself which would get deallocated by lod_reset_()
-	 */
-	p = strdup(uri);
-	if(!p)
-	{
-		lod_set_error_(context, strerror(errno));
-		return NULL;
-	}		
-	lod_reset_(context);
-	context->subject = p;
-	world = lod_world(context);
-	if(!world)
-	{
-		context->error = 1;
-		return NULL;
-	}
-	model = lod_model(context);
-	if(!model)
-	{
-		context->error = 1;
-		return NULL;
-	}
-	if(mode == LOD_FETCH_ALWAYS)
-	{
-		/* It doesn't matter whether triples about the subject already exist
-		 * if we're going to fetch afresh anyway.
-		 */
-		query = NULL;
-	}
-	else
-	{
-		/* Attempt to locate triples about the subject */
-		node = librdf_new_node_from_uri_string(world, (const unsigned char *) uri);
-		if(!node)
-		{
-			context->error = 1;
-			return NULL;
-		}		
-		query = librdf_new_statement_from_nodes(world, node, NULL, NULL);
-		/* Note: node becomes owned by the statement, and freed upon error */
-		if(!query)
-		{
-			context->error = 1;
-			return NULL;
-		}
-		stream = librdf_model_find_statements(model, query);
-		if(!stream)
-		{
-			context->error = 1;
-			librdf_free_statement(query);
-			return NULL;
-		}
-	}
-	if(mode == LOD_FETCH_NEVER ||
-	   (mode == LOD_FETCH_ABSENT && !librdf_stream_end(stream)))
-	{
-		librdf_free_stream(stream);
-		inst = lod_instance_create_(context, query, node);
-		if(!inst)
-		{
-			librdf_free_statement(query);
-			return NULL;
-		}
-		return inst;
-	}
-	if(query)
-	{
-		librdf_free_statement(query);
-	}
-	if(stream)
-	{
-		librdf_free_stream(stream);
-	}
-	if(lod_fetch_(context))
-	{
-		return NULL;
-	}
-	inst = NULL;
-	for(i = 0; i < context->nsubjects; i++)
-	{
-		if(inst)
-		{
-			lod_instance_destroy(inst);
-		}
-		/* Now that we've successfully fetched the URI, Attempt to locate
-		 * triples about the subject (possibly for the second time)
-		 */
-		node = librdf_new_node_from_uri_string(world, (const unsigned char *) context->subjects[i]);
-		if(!node)
-		{
-			context->error = 1;
-			return NULL;
-		}
-		query = librdf_new_statement_from_nodes(world, node, NULL, NULL);
-		/* Note: node becomes owned by the statement, and freed upon error */
-		if(!query)
-		{
-			context->error = 1;
-			return NULL;
-		}
-		inst = lod_instance_create_(context, query, node);
-		if(!inst)
-		{
-			librdf_free_statement(query);
-			return NULL;
-		}
-		if(lod_instance_exists(inst))
-		{
-			if(fetchmode & LOD_FETCH_PRIMARYTOPIC)
-			{
-				primary = lod_instance_primarytopic(inst);
-				if(primary)
-				{
-					lod_instance_destroy(inst);
-					inst = primary;
-				}
-				else if(context->error)
-				{
-					lod_instance_destroy(inst);
-					return NULL;
-				}
-			}
-			break;
-		}
-	}
-	return inst;
-}
-
