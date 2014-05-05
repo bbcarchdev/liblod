@@ -56,7 +56,7 @@
 	</para>
 
 	<para>
-	  In contrast with <function>lod_resolve</function>,
+	  In contrast to <function>lod_resolve</function>,
 	  <function>lod_fetch</function> will not check for the presence of
 	  triples where <parameter>uri</parameter> is the subject within the
 	  model associated with <parameter>context</parameter> before attempting

@@ -50,7 +50,7 @@
 	<para>
 	  <function>lod_locate</function> attempts to locate triples where
 	  <parameter>uri</parameter> is the subject URI within the model
-	  associated with <parameter>context</parameter>. In contrast with
+	  associated with <parameter>context</parameter>. In contrast to
 	  <function>lod_fetch</function> and <function>lod_resolve</function>,
 	  <function>lod_locate</function> will make no attempt to fetch
 	  additional data if no triples where <parameter>uri</parameter> is
