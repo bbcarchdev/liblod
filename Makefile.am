@@ -22,7 +22,11 @@ DIST_SUBDIRS = m4 liburi docs
 
 SUBDIRS = @subdirs@ docs
 
-EXTRA_DIST = LICENSE-2.0 README.md *.xml
+EXTRA_DIST = LICENSE-2.0 README.md *.xml liblod.pc.in
+
+pkgconfigdir = $(libdir)/pkgconfig
+
+pkgconfig_DATA = liblod.pc
 
 include_HEADERS = liblod.h
 

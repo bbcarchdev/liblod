@@ -1,4 +1,5 @@
 usr/lib/liblod.a
+usr/lib/pkgconfig/liblod.pc
 usr/include/liblod.h
 usr/share/man/man3/liblod.3
 usr/share/man/man3/lod_create.3

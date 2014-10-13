@@ -47,6 +47,7 @@ Makefile
 m4/Makefile
 liburi/Makefile
 docs/Makefile
+liblod.pc
 ])
 
 AC_OUTPUT
