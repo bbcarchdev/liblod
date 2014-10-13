@@ -240,7 +240,7 @@ lod_curl(LODCONTEXT *context)
 	context->headers = curl_slist_append(NULL, accept);
 	context->headers = curl_slist_append(context->headers, ua);
 	curl_easy_setopt(context->ch, CURLOPT_HTTPHEADER, context->headers);
-	curl_easy_setopt(context->ch, CURLOPT_VERBOSE, context->verbose);
+	curl_easy_setopt(context->ch, CURLOPT_VERBOSE, (int) context->verbose);
 	return context->ch;
 }
 
