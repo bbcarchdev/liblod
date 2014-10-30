@@ -16,7 +16,7 @@
 
 EXTRA_DIST = *.xml
 
-dist_twinehtdoc_DATA = local.css index.html \
+dist_liblodhtdoc_DATA = local.css index.html \
 	lod_create.3.html lod_destroy.3.html \
 	lod_resolve.3.html lod_locate.3.html lod_fetch.3.html \
 	lod_world.3.html lod_storage.3.html lod_model.3.html lod_curl.3.html \
