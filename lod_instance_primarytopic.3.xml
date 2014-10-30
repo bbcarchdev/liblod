@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<refentry version="5.0" xml:lang="en" xml:id="lod_instance_primarytopic-3" xmlns="http://docbook.org/ns" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <info>
+	<authorgroup>
+	  <author>
+		<personname>
+		  <firstname>Mo</firstname>
+		  <surname>McRoberts</surname>
+		</personname>
+		<affiliation>
+		  <org>
+			<orgname>BBC</orgname>
+			<orgdiv>Archive Development</orgdiv>
+			<uri>http://www.bbc.co.uk/archive/</uri>
+		  </org>
+		</affiliation>
+	  </author>
+	</authorgroup>
+	<copyright>
+	  <year>2014</year>
+	  <holder>BBC</holder>
+	</copyright>
+  </info>
+  
+  <refmeta>
+	<refentrytitle>lod_instance_primarytopic</refentrytitle>
+	<manvolnum>3</manvolnum>
+	<refmiscinfo class="source">Linked Open Data client</refmiscinfo>
+	<refmiscinfo class="manual">Library functions</refmiscinfo>
+  </refmeta>
+  
+  <refnamediv>
+	<refname>lod_instance_primarytopic</refname>
+	<refpurpose>Follow a foaf:primaryTopic reference</refpurpose>
+  </refnamediv>
+  
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcsynopsisinfo>#include &lt;liblod.h&gt;</funcsynopsisinfo>
+	  <funcprototype>
+		<funcdef>LODINSTANCE *<function>lod_instance_primarytopic</function></funcdef>
+		<paramdef>LODINSTANCE *<parameter>instance</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+	<title>Description</title>
+	<para>
+	  The <function>lod_instance_primarytopic</function> attempts to follow
+	  a <literal>foaf:primaryTopic</literal> relationship between the subject
+	  of the supplied instance and another resource.
+	</para>
+	<para>
+	  If such a triple exists in the associated context's model, a new
+	  instance will be created with the object of the triple as its
+	  subject.
+	</para>
+	<para>
+	  Note that the object of the <literal>foaf:primaryTopic</literal>
+	  triple may not itself be present in the model, and you should
+	  use <function>lod_instance_exists</function> on the newly-returned
+	  instance to check.
+	</para>	
+  </refsect1>
+  
+  <refsect1>
+	<title>Return value</title>
+	<para>
+	  If a <literal>foaf:primaryTopic</literal> triple exists where the
+	  subject matches that of the instance,
+	  <function>lod_instance_primarytopic</function> returns a new instance
+	  whose subject is the object of that triple.
+	</para>
+	<para>
+	  If no such triple was found, or an error occurs,
+	  <constant>NULL</constant> will be returned instead. Use
+	  <function>lod_error</function> to determine whether an error occurred,
+	  or whether an appropriate triple was simply absent.
+	</para>
+  </refsect1>
+  
+  <refsect1>
+	<title>See also</title>
+	<link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	<link xlink:href="lod_resolve.3"><citerefentry><refentrytitle>lod_resolve</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	<link xlink:href="lod_error.3"><citerefentry><refentrytitle>lod_error</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	<link xlink:href="lod_instance_destroy.3"><citerefentry><refentrytitle>lod_instance_destroy</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.
+  </refsect1>
+  
+</refentry>

@@ -14,12 +14,9 @@
 ##  See the License for the specific language governing permissions and
 ##  limitations under the License.
 
-XML2HTMLFLAGS = \
-	--param "html.linksfile" "'file://$(abs_top_srcdir)/docbook-html5/res-links.xml'" \
-    --param "html.navfile" "'file://$(abs_top_srcdir)/docbook-html5/res-nav.xml'" \
-    --param "html.ie78css" "'http://bbcarchdev.github.io/painting-by-numbers/ie78.css'"
+EXTRA_DIST = *.xml
 
-dist_noinst_DATA = local.css index.html \
+dist_twinehtdoc_DATA = local.css index.html \
 	lod_create.3.html lod_destroy.3.html \
 	lod_resolve.3.html lod_locate.3.html lod_fetch.3.html \
 	lod_world.3.html lod_storage.3.html lod_model.3.html lod_curl.3.html \
@@ -30,65 +27,65 @@ dist_noinst_DATA = local.css index.html \
 	lod_instance_stream.3.html lod_instance_uri.3.html \
 	lod_instance_primarytopic.3.html
 
-index.html: $(top_srcdir)/liblod.3.xml
+index.html: $(srcdir)/liblod.3.xml $(XSLTFILES) $(NAV) $(LINKS)
 	$(XML2HTML) $<
 
-lod_create.3.html: $(top_srcdir)/lod_create.3.xml
+lod_create.3.html: $(srcdir)/lod_create.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_destroy.3.html: $(top_srcdir)/lod_destroy.3.xml
+lod_destroy.3.html: $(srcdir)/lod_destroy.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_resolve.3.html: $(top_srcdir)/lod_resolve.3.xml
+lod_resolve.3.html: $(srcdir)/lod_resolve.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_fetch.3.html: $(top_srcdir)/lod_fetch.3.xml
+lod_fetch.3.html: $(srcdir)/lod_fetch.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_locate.3.html: $(top_srcdir)/lod_locate.3.xml
+lod_locate.3.html: $(srcdir)/lod_locate.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_world.3.html: $(top_srcdir)/lod_world.3.xml
+lod_world.3.html: $(srcdir)/lod_world.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_storage.3.html: $(top_srcdir)/lod_storage.3.xml
+lod_storage.3.html: $(srcdir)/lod_storage.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_model.3.html: $(top_srcdir)/lod_model.3.xml
+lod_model.3.html: $(srcdir)/lod_model.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_curl.3.html: $(top_srcdir)/lod_curl.3.xml
+lod_curl.3.html: $(srcdir)/lod_curl.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_set_world.3.html: $(top_srcdir)/lod_set_world.3.xml
+lod_set_world.3.html: $(srcdir)/lod_set_world.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_set_storage.3.html: $(top_srcdir)/lod_set_storage.3.xml
+lod_set_storage.3.html: $(srcdir)/lod_set_storage.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_set_model.3.html: $(top_srcdir)/lod_set_model.3.xml
+lod_set_model.3.html: $(srcdir)/lod_set_model.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_set_curl.3.html: $(top_srcdir)/lod_set_curl.3.xml
+lod_set_curl.3.html: $(srcdir)/lod_set_curl.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_error.3.html: $(top_srcdir)/lod_error.3.xml
+lod_error.3.html: $(srcdir)/lod_error.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_errmsg.3.html: $(top_srcdir)/lod_errmsg.3.xml
+lod_errmsg.3.html: $(srcdir)/lod_errmsg.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_instance_destroy.3.html: $(top_srcdir)/lod_instance_destroy.3.xml
+lod_instance_destroy.3.html: $(srcdir)/lod_instance_destroy.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_instance_exists.3.html: $(top_srcdir)/lod_instance_exists.3.xml
+lod_instance_exists.3.html: $(srcdir)/lod_instance_exists.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_instance_stream.3.html: $(top_srcdir)/lod_instance_stream.3.xml
+lod_instance_stream.3.html: $(srcdir)/lod_instance_stream.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_instance_uri.3.html: $(top_srcdir)/lod_instance_uri.3.xml
+lod_instance_uri.3.html: $(srcdir)/lod_instance_uri.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<
 
-lod_instance_primarytopic.3.html: $(top_srcdir)/lod_instance_primarytopic.3.xml
+lod_instance_primarytopic.3.html: $(srcdir)/lod_instance_primarytopic.3.xml $(XSLTFILES) $(NAV) $(LINKS) 
 	$(XML2HTML) $<

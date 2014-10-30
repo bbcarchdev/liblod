@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<refentry version="5.0" xml:lang="en" xml:id="lod_curl-3" xmlns="http://docbook.org/ns" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <info>
+	<authorgroup>
+	  <author>
+		<personname>
+		  <firstname>Mo</firstname>
+		  <surname>McRoberts</surname>
+		</personname>
+		<affiliation>
+		  <org>
+			<orgname>BBC</orgname>
+			<orgdiv>Archive Development</orgdiv>
+			<uri>http://www.bbc.co.uk/archive/</uri>
+		  </org>
+		</affiliation>
+	  </author>
+	</authorgroup>
+	<copyright>
+	  <year>2014</year>
+	  <holder>BBC</holder>
+	</copyright>
+  </info>
+  
+  <refmeta>
+	<refentrytitle>lod_curl</refentrytitle>
+	<manvolnum>3</manvolnum>
+	<refmiscinfo class="source">Linked Open Data client</refmiscinfo>
+	<refmiscinfo class="manual">Library functions</refmiscinfo>
+  </refmeta>
+  
+  <refnamediv>
+	<refname>lod_curl</refname>
+	<refpurpose>Obtain a libcurl handle associated with a context</refpurpose>
+  </refnamediv>
+  
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcsynopsisinfo>#include &lt;liblod.h&gt;</funcsynopsisinfo>
+	  <funcprototype>
+		<funcdef>CURL *<function>lod_curl</function></funcdef>
+		<paramdef>LODCONTEXT *<parameter>context</parameter></paramdef>		  
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+	<title>Description</title>
+
+	<para>
+	  <function>lod_curl</function> obtains the <type>CURL</type>
+	  handle which is associated with <parameter>context</parameter>.	  
+	</para>	
+  </refsect1>
+  
+  <refsect1>
+	<title>Return value</title>	
+
+	<para>
+	  Upon success, <function>lod_curl</function> returns the
+	  <type>CURL</type> handle associated with <parameter>context</parameter>.
+	</para>
+
+	<para>
+	  If an error occurs, <function>lod_curl</function> returns
+	  <constant>NULL</constant>. <function>lod_errmsg</function> can be
+	  used to obtain a description of the error condition.
+	</para>
+  </refsect1>
+  
+
+  <refsect1>
+	<title>See also</title>
+
+	<para>
+	  <link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_world.3"><citerefentry><refentrytitle>lod_world</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_storage.3"><citerefentry><refentrytitle>lod_storage</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_model.3"><citerefentry><refentrytitle>lod_model</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_errmsg.3"><citerefentry><refentrytitle>lod_errmsg</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	</para>
+  </refsect1>
+  
+</refentry>

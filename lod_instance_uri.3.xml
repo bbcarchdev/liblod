@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<refentry version="5.0" xml:lang="en" xml:id="lod_instance_uri-3" xmlns="http://docbook.org/ns" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <info>
+	<authorgroup>
+	  <author>
+		<personname>
+		  <firstname>Mo</firstname>
+		  <surname>McRoberts</surname>
+		</personname>
+		<affiliation>
+		  <org>
+			<orgname>BBC</orgname>
+			<orgdiv>Archive Development</orgdiv>
+			<uri>http://www.bbc.co.uk/archive/</uri>
+		  </org>
+		</affiliation>
+	  </author>
+	</authorgroup>
+	<copyright>
+	  <year>2014</year>
+	  <holder>BBC</holder>
+	</copyright>
+  </info>
+  
+  <refmeta>
+	<refentrytitle>lod_instance_uri</refentrytitle>
+	<manvolnum>3</manvolnum>
+	<refmiscinfo class="source">Linked Open Data client</refmiscinfo>
+	<refmiscinfo class="manual">Library functions</refmiscinfo>
+  </refmeta>
+  
+  <refnamediv>
+	<refname>lod_instance_uri</refname>
+	<refpurpose>Return a librdf_uri for the subject of an instance</refpurpose>
+  </refnamediv>
+  
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcsynopsisinfo>#include &lt;liblod.h&gt;</funcsynopsisinfo>
+	  <funcprototype>
+		<funcdef>librdf_uri *<function>lod_instance_uri</function></funcdef>
+		<paramdef>LODINSTANCE *<parameter>instance</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+	<title>Description</title>
+	<para>
+	  <function>lod_instance_uri</function> returns a new
+	  <package>librdf</package> URI containing the subject URI of the
+	  instance.
+	</para>
+	<para>
+	  The resulting URI should be freed with
+	  <function>librdf_free_uri</function> once it is no longer required.
+	</para>
+  </refsect1>
+
+  <refsect1>
+	<title>Return value</title>
+	<para>
+	  Upon success, <function>lod_instance_uri</function> returns a new
+	  <package>librdf</package> URI.
+	</para>
+	<para>
+	  If an error occurs, <function>lod_instance_uri</function> returns
+	  <constant>NULL</constant>. A description of the error condition
+	  can be obtained using <function>lod_errmsg</function>.
+	</para>
+  </refsect1>
+
+  <refsect1>
+	<title>See also</title>	
+	<link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	<link xlink:href="lod_resolve.3"><citerefentry><refentrytitle>lod_resolve</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	<link xlink:href="lod_errmsg.3"><citerefentry><refentrytitle>lod_errmsg</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	<link xlink:href="lod_instance_exists.3"><citerefentry><refentrytitle>lod_instance_exists</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	<link xlink:href="lod_instance_stream.3"><citerefentry><refentrytitle>lod_instance_stream</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	<link xlink:href="http://librdf.org/docs/api/redland-uri.html#librdf-uri-stream"><citerefentry><refentrytitle>librdf_free_uri</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.
+  </refsect1>
+	
+</refentry>

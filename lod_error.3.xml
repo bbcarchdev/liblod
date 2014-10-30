@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<refentry version="5.0" xml:lang="en" xml:id="lod_error-3" xmlns="http://docbook.org/ns" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <info>
+	<authorgroup>
+	  <author>
+		<personname>
+		  <firstname>Mo</firstname>
+		  <surname>McRoberts</surname>
+		</personname>
+		<affiliation>
+		  <org>
+			<orgname>BBC</orgname>
+			<orgdiv>Archive Development</orgdiv>
+			<uri>http://www.bbc.co.uk/archive/</uri>
+		  </org>
+		</affiliation>
+	  </author>
+	</authorgroup>
+	<copyright>
+	  <year>2014</year>
+	  <holder>BBC</holder>
+	</copyright>
+  </info>
+  
+  <refmeta>
+	<refentrytitle>lod_error</refentrytitle>
+	<manvolnum>3</manvolnum>
+	<refmiscinfo class="source">Linked Open Data client</refmiscinfo>
+	<refmiscinfo class="manual">Library functions</refmiscinfo>
+  </refmeta>
+  
+  <refnamediv>
+	<refname>lod_error</refname>
+	<refpurpose>Determine if an error occurred</refpurpose>
+  </refnamediv>
+  
+  <refsynopsisdiv>
+	<funcsynopsis>
+	  <funcsynopsisinfo>#include &lt;liblod.h&gt;</funcsynopsisinfo>
+	  <funcprototype>
+		<funcdef>int <function>lod_error</function></funcdef>
+		<paramdef>LODCONTEXT *<parameter>context</parameter></paramdef>
+	  </funcprototype>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+	<title>Description</title>
+	<para>
+	  <function>lod_error</function> determines whether an error occurred
+	  in a previous call to a <package>liblod</package> function involving
+	  the supplied context.
+	</para>
+	<para>
+	  If an error has occurred, a description of the error condition can
+	  be obtained with <function>lod_errmsg</function>.
+	</para>	  
+  </refsect1>
+
+  <refsect1>
+	<title>Return value</title>
+	<para>
+	  If no error has occurred, <function>lod_error</function> returns zero.
+	</para>
+	
+	<para>
+	  Otherwise, <function>lod_error</function> returns a non-zero integer.
+	</para>
+  </refsect1>
+
+  <refsect1>
+	<title>See also</title>
+	<para>
+	  <link xlink:href="http://bbcarchdev.github.io/liblod/"><citerefentry><refentrytitle>liblod</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="lod_errmsg.3"><citerefentry><refentrytitle>lod_errmsg</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.
+	</para>
+  </refsect1>
+
+</refentry>

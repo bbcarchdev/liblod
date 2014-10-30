@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<refentry version="5.0" xml:lang="en" xml:id="liblod-3" xmlns="http://docbook.org/ns" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <info>
+	<authorgroup>
+	  <author>
+		<personname>
+		  <firstname>Mo</firstname>
+		  <surname>McRoberts</surname>
+		</personname>
+		<affiliation>
+		  <org>
+			<orgname>BBC</orgname>
+			<orgdiv>Archive Development</orgdiv>
+			<uri>http://www.bbc.co.uk/archive/</uri>
+		  </org>
+		</affiliation>
+	  </author>
+	</authorgroup>
+	<copyright>
+	  <year>2014</year>
+	  <holder>BBC</holder>
+	</copyright>
+  </info>
+  
+  <refmeta>
+	<refentrytitle>liblod</refentrytitle>
+	<manvolnum>3</manvolnum>
+	<refmiscinfo class="source">Linked Open Data client</refmiscinfo>
+	<refmiscinfo class="manual">Library functions</refmiscinfo>
+  </refmeta>
+  
+  <refnamediv>
+	<refname>liblod</refname>
+	<refpurpose>Linked Open Data client library</refpurpose>
+  </refnamediv>
+  
+  <refsynopsisdiv>
+	<cmdsynopsis>
+	  <command>cc</command>
+	  <arg choice="opt"><option><replaceable>flag</replaceable></option></arg>
+	  <arg choice="plain"><replaceable>file …</replaceable></arg>
+	  <arg choice="plain">-llod</arg>
+	  <arg choice="opt"><option><replaceable>library …</replaceable></option></arg>
+	</cmdsynopsis>
+	<funcsynopsis>
+	  <funcsynopsisinfo>#include &lt;liblod.h&gt;</funcsynopsisinfo>
+	</funcsynopsis>
+  </refsynopsisdiv>
+
+  <refsect1>
+	<title>Description</title>
+	<para>
+	  Linked Open Data is a method of publishing machine-readable structured
+	  data on the web, using resolveable URIs as the means of
+	  identifying the entities described and referred to by the data.
+	</para>
+	<para>
+	  <package>liblod</package> is a library for consuming published
+	  Linked Open Data, providing a simple interface for resolving a
+	  URI and interrogating the data which is retrieved.
+	</para>
+  </refsect1>
+  
+  <refsect1>
+	<title>Interfaces</title>
+	<para>
+	  <package>liblod</package> provides the public interfaces listed
+	  below.
+	</para>
+
+	<segmentedlist>
+	  <segtitle>Function</segtitle>
+	  <segtitle>Description</segtitle>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_create.3"><function>lod_create</function></link></seg>
+		<seg>Create a new context</seg>
+	  </seglistitem>
+
+	  <seglistitem>
+		<seg><link xlink:href="lod_resolve.3"><function>lod_resolve</function></link></seg>
+		<seg>Attempt to resolve a Linked Open Data URI</seg>
+	  </seglistitem>
+
+	  <seglistitem>
+		<seg><link xlink:href="lod_locate.3"><function>lod_locate</function></link></seg>
+		<seg>Locate triples about a subject already present in a context's model</seg>
+	  </seglistitem>
+
+	  <seglistitem>
+		<seg><link xlink:href="lod_fetch.3"><function>lod_fetch</function></link></seg>
+		<seg>Resolve a Linked Open Data URI, fetching the data irrespective of whether the subject exists in the context's model</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_destroy.3"><function>lod_destroy</function></link></seg>
+		<seg>Destroy a previously-created context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_world.3"><function>lod_world</function></link></seg>
+		<seg>Obtain the <package>librdf</package> world used by a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_set_world"><function>lod_set_world</function></link></seg>
+		<seg>Set the <package>librdf</package> world used by a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_storage.3"><function>lod_storage</function></link></seg>
+		<seg>Obtain the <package>librdf</package> storage used by a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_set_storage.3"><function>lod_set_storage</function></link></seg>
+		<seg>Set the <package>librdf</package> storage used by a context</seg>
+	  </seglistitem>
+
+	  <seglistitem>
+		<seg><link xlink:href="lod_model.3"><function>lod_model</function></link></seg>
+		<seg>Obtain the <package>librdf</package> model used by a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_set_model.3"><function>lod_set_model</function></link></seg>
+		<seg>Set the <package>librdf</package> model used by a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_curl"><function>lod_curl</function></link></seg>
+		<seg>Obtain the <package>libcurl</package> handle used by a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_set_curl.3"><function>lod_set_curl</function></link></seg>
+		<seg>Set the <package>libcurl</package> handle used by a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg>lod_subject</seg>
+		<seg>Retrieve the most recently-resolved subject URI</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg>lod_document</seg>
+		<seg>Retrieve the URL of the most recently parsed document</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg>lod_status</seg>
+		<seg>Obtain the HTTP status of the most recent request</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_error.3"><function>lod_error</function></link></seg>
+		<seg>Determine whether an error has occurred</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_errmsg.3"><function>lod_errmsg</function></link></seg>
+		<seg>Obtain a description of a context's error condition</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg>lod_librdf_logger</seg>
+		<seg>Default logging function for <package>librdf</package> world objects.</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg>lod_useragent</seg>
+		<seg>Obtain the User-Agent HTTP header string for a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg>lod_accept</seg>
+		<seg>Obtain the Accept HTTP header string for a context</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_instance_destroy.3"><function>lod_instance_destroy</function></link></seg>
+		<seg>Free resources allocated to an instance</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_instance_stream.3"><function>lod_instance_stream</function></link></seg>
+		<seg>Obtain a <package>librdf</package> stream for an instance</seg>
+	  </seglistitem>
+	  
+	  <seglistitem>
+		<seg><link xlink:href="lod_instance_uri.3"><function>lod_instance_uri</function></link></seg>
+		<seg>Obtain a <package>librdf</package> URI for an instance</seg>
+	  </seglistitem>
+
+	  <seglistitem>
+		<seg><link xlink:href="lod_instance_exists.3"><function>lod_instance_exists</function></link></seg>
+		<seg>Determine whether the subject of an instance exists within the context's model</seg>
+	  </seglistitem>
+
+	  <seglistitem>
+		<seg><link xlink:href="lod_instance_primarytopic"><function>lod_instance_primarytopic</function></link></seg>
+		<seg>Attempt to follow a foaf:primaryTopic relationship</seg>
+	  </seglistitem>
+
+	</segmentedlist>
+  </refsect1>
+
+  <refsect1>
+	<title>Dependencies</title>
+	<para>
+	  <package>liblod</package> depends upon <package>libcurl</package>,
+	  <package>librdf</package>, <package>libxml2</package> and
+	  <package>liburi</package>.
+	</para>
+	<para>
+	  A copy of <package>liburi</package> is included in the source
+	  distribution.
+	</para>
+  </refsect1>
+
+  <refsect1>
+	<title>See also</title>
+	
+	<para>
+	  <link xlink:href="http://curl.haxx.se/libcurl/"><citerefentry><refentrytitle>libcurl</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="http://librdf.org/docs/api/index.html"><citerefentry><refentrytitle>librdf</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>,
+	  <link xlink:href="http://xmlsoft.org/html/index.html"><citerefentry><refentrytitle>libxml2</refentrytitle><manvolnum>3</manvolnum></citerefentry></link>.
+	</para>
+  </refsect1>
+  
+</refentry>
