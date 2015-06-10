@@ -29,14 +29,10 @@ int
 lod_fetch_(LODCONTEXT *context)
 {
 	LODRESPONSE *response;
-	librdf_world *world;
-	librdf_model *model;
-	librdf_uri *baseuri;
-	librdf_parser *parser;
-	CURLcode e;
+	LODRESULT rr;
 	int r, count, followed_link;
 	const char *uri, *fragment;
-	char *t, *newuri, *tempuri, errbuf[64];
+	char *t, *tempuri;
 	size_t fraglen;
 
 	tempuri = NULL;
@@ -55,20 +51,8 @@ lod_fetch_(LODCONTEXT *context)
 	{
 		fraglen = 0;
 	}
-	parser = NULL;
-	baseuri = NULL;
 	r = 0;
 	followed_link = 0;
-	world = lod_world(context);
-	if(!world)
-	{
-		return -1;
-	}
-	model = lod_model(context);
-	if(!model)
-	{
-		return -1;
-	}
 	response = lod_response_create();
 	if(!response)
 	{
@@ -93,34 +77,29 @@ lod_fetch_(LODCONTEXT *context)
 			r = 1;
 			break;
 		}
-		context->status = response->status;
-		if(response->target)
+		rr = lod_response_process(context, response);
+		switch(rr)
 		{
-			/* Follow a redirect */
+		case LODR_FAIL:
+			r = 1;
+			break;
+		case LODR_COMPLETE:
+			r = 0;
+			break;
+		case LODR_FOLLOW:
+		case LODR_FOLLOW_REPLACE:
 			free(tempuri);
-			tempuri = NULL;
-			newuri = response->target;
-			if((e = curl_easy_getinfo(context->ch, CURLINFO_REDIRECT_URL, &newuri)))
-			{
-				lod_set_error_(context, curl_easy_strerror(e));
-				r = 1;
-				break;
-			}
-			tempuri = (char *) malloc(strlen(newuri) + fraglen + 1);
+			tempuri = (char *) malloc(strlen(response->target) + fraglen + 1);
 			if(!tempuri)
 			{
 				lod_set_error_(context, strerror(errno));
 				r = 1;
 				break;
 			}
-			strcpy(tempuri, newuri);
+			strcpy(tempuri, response->target);
 			uri = tempuri;
-			if(response->status == 303)
+			if(rr != LODR_FOLLOW_REPLACE)
 			{
-				/* In the case of a 303, the new URI is simply used
-				 * in the subsequent request -- we shouldn't ever push
-				 * it onto the potential subject list
-				 */
 				continue;
 			}
 			if(fragment)
@@ -137,128 +116,32 @@ lod_fetch_(LODCONTEXT *context)
 			}
 			lod_push_subject_(context, tempuri);
 			/* tempuri is now owned by context */
-			tempuri = NULL;
-			continue;
-		}
-		if(response->status >= 200 && response->status <= 299 && response->buf)
-		{			
-			if(!response->type)
+			tempuri = NULL;			
+			break;
+		case LODR_FOLLOW_LINK:
+			/* This will only happen once per fetch loop */
+			if(followed_link)
 			{
-				lod_set_error_(context, "failed to process payload because no content type is available");
+				lod_set_error_(context, "a <link rel=\"alternate\"> has previously been followed in this resolution session; will not do so again");
 				r = 1;
 				break;
 			}
-			t = strchr(response->type, ';');
-			/* XXX determine charset for passing to HTML parser */
-			if(t)
-			{
-				*t = 0;
-			}
-			if(!strcmp(response->type, "text/html") ||
-			   !strcmp(response->type, "application/xhtml+xml") ||
-			   !strcmp(response->type, "application/vnd.wap.xhtml+xml") ||
-			   !strcmp(response->type, "application/vnd.ctv.xhtml+xml") ||
-			   !strcmp(response->type, "application/vnd.hbbtv.xhtml+xml"))
-			{
-				/* Perform link autodiscovery if we haven't previously done
-				 * so.
-				 */
-				if(followed_link)
-				{
-					lod_set_error_(context, "a <link rel=\"alternate\"> has previously been followed in this resolution session; will not do so again");
-					r = 1;
-					break;
-				}
-				r = lod_html_discover_(context, response, uri, &newuri);
-				if(r < 0)
-				{
-					lod_set_error_(context, "failed to parse HTML for RDF autodiscovery");
-					break;
-				}
-				else if(r == 0)
-				{
-					/* Autodiscovery failed */
-					lod_set_error_(context, "failed to discover link to RDF representation from HTML document\n");
-					r = 1;
-					break;
-				}
-				r = 0;
-				/* tempuri is now owned by context */
-				lod_push_subject_(context, newuri);
-				uri = newuri;
-				followed_link = 1;
-				continue;
-			}
-			break;			
+			lod_push_subject_(context, response->target);
+			/* response->target is now owned by the context */
+			uri = response->target;
+			response->target = NULL;
+			followed_link = 1;
+			break;
 		}
-		/* Some other status code */
-		r = 1;
-		sprintf(errbuf, "HTTP status %ld", response->status);
-		lod_set_error_(context, errbuf);
-		break;
+		if(r || rr == LODR_COMPLETE)
+		{
+			break;
+		}
 	}
 	if(count == context->max_redirects)
 	{
 		lod_set_error_(context, "too many redirects encountered");
 		r = 1;
-	}
-	if(!r)
-	{
-		if(!response->type ||
-		   !strcmp(response->type, "text/plain") ||
-		   !strcmp(response->type, "application/octet-stream") ||
-		   !strcmp(response->type, "application/x-unknown"))
-		{
-			if((r = lod_sniff_(context, response)))
-			{
-				lod_set_error_(context, "failed to determine serialisation");
-			}
-		}
-	}
-	if(!r)
-	{
-		parser = librdf_new_parser(world, NULL, response->type, NULL);
-		if(!parser)
-		{
-			lod_set_error_(context, "failed to create RDF parser");
-			r = 1;
-		}
-	}
-	if(!r)
-	{
-		if(!response->uri)
-		{
-			lod_set_error_(context, "no document URI has been set; cannot parse payload\n");
-			r = 1;
-		}
-	}
-	if(!r)
-	{
-		free(context->document);
-		context->document = response->uri;
-		response->uri = NULL;
-		baseuri = librdf_new_uri(world, (const unsigned char *) context->document);
-		if(!baseuri)
-		{
-			lod_set_error_(context, "failed to create RDF URI");
-			r = 1;
-		}
-	}
-	if(!r)
-	{
-		r = librdf_parser_parse_counted_string_into_model(parser, (unsigned char *) response->buf, response->buflen, baseuri, model);
-		if(context->error)
-		{
-			r = 1;
-		}
-	}
-	if(baseuri)
-	{
-		librdf_free_uri(baseuri);
-	}
-	if(parser)
-	{
-		librdf_free_parser(parser);
 	}
 	free(tempuri);
 	lod_response_destroy(response);
@@ -321,7 +204,7 @@ lod_fetch_curl_(LODCONTEXT *context, const char *uri, LODRESPONSE *response)
 	{
 		return -1;
 	}
-	if(code > 300 && code <= 399)
+	if(code >= 300 && code <= 399)
 	{
 		if((e = curl_easy_getinfo(ch, CURLINFO_REDIRECT_URL, &str)))
 		{

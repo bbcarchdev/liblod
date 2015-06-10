@@ -25,6 +25,20 @@ typedef struct lod_context_struct LODCONTEXT;
 typedef struct lod_instance_struct LODINSTANCE;
 typedef struct lod_response_struct LODRESPONSE;
 
+typedef enum
+{
+	/* A processing error occurred */
+	LODR_FAIL,
+	/* The payload has been parsed into the context's model */
+	LODR_COMPLETE,
+	/* Follow the response's redirect URL (target of a 30x) */
+	LODR_FOLLOW,
+	/* Follow the response's redirect URL as a replacement (i.e., 303) */
+	LODR_FOLLOW_REPLACE,
+	/* Follow the response's redirect URL (target of a <link>) */
+	LODR_FOLLOW_LINK
+} LODRESULT;
+
 /* A callback which can be supplied to perform a low-level URI fetch in
  * place of the default implementation (for example, to modify the cURL
  * request on a per-resource basis, or to use something else entirely).
@@ -203,6 +217,9 @@ int lod_response_append_payload(LODRESPONSE *resp, const char *bytes, size_t len
 
 /* Reset the payload of a response */
 int lod_response_reset_payload(LODRESPONSE *resp);
+
+/* Process a response as part of a fetch loop */
+LODRESULT lod_response_process(LODCONTEXT *context, LODRESPONSE *response);
 
 #endif /*!LIBLOD_H_*/
 

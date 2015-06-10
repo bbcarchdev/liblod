@@ -146,8 +146,8 @@ lod_response_set_target(LODRESPONSE *resp, const char *uri)
 		lod_response_set_error(resp, "failed to duplicate target URI");
 		return -1;
 	}
-	free(resp->uri);
-	resp->uri = p;
+	free(resp->target);
+	resp->target = p;
 	return 0;
 }
 
@@ -213,4 +213,141 @@ lod_response_reset_payload(LODRESPONSE *resp)
 {
 	resp->buflen = 0;
 	return 0;
+}
+
+/* Process a response as part of a fetch loop */
+LODRESULT
+lod_response_process(LODCONTEXT *context, LODRESPONSE *response)
+{
+	int r;
+	char *newuri, *t;
+	char errbuf[64];
+	librdf_world *world;
+	librdf_model *model;
+	librdf_uri *baseuri;
+	librdf_parser *parser;
+	
+	context->status = response->status;
+	world = lod_world(context);
+	if(!world)
+	{
+		return LODR_FAIL;
+	}
+	model = lod_model(context);
+	if(!model)
+	{
+		return LODR_FAIL;
+	}
+	if(!response->uri)
+	{
+		lod_set_error_(context, "cannot process response because no canonical URL was set");
+		return LODR_FAIL;
+	}
+	if(response->target)
+	{
+		if(response->status == 303)
+		{
+			return LODR_FOLLOW_REPLACE;
+		}
+		return LODR_FOLLOW;
+	}
+	if(response->status < 200 || response->status > 299)
+	{
+		/* Some other status code */
+		sprintf(errbuf, "HTTP status %ld", response->status);
+		lod_set_error_(context, errbuf);
+		return LODR_FAIL;		
+	}
+	if(!response->buf)
+	{
+		/* XXX empty payload but suitable Link header present should be
+		 * acceptable.
+		 */
+		lod_set_error_(context, "cannot parse an empty payload");
+		return LODR_FAIL;
+	}
+	if(response->type)
+	{
+		t = strchr(response->type, ';');
+		/* XXX determine charset for passing to HTML parser */
+		if(t)
+		{
+			*t = 0;
+		}
+		if(!strcmp(response->type, "text/html") ||
+		   !strcmp(response->type, "application/xhtml+xml") ||
+		   !strcmp(response->type, "application/vnd.wap.xhtml+xml") ||
+		   !strcmp(response->type, "application/vnd.ctv.xhtml+xml") ||
+		   !strcmp(response->type, "application/vnd.hbbtv.xhtml+xml"))
+		{
+			newuri = NULL;
+			r = lod_html_discover_(context, response, response->uri, &newuri);
+			if(r < 0)
+			{
+				lod_set_error_(context, "failed to parse HTML for RDF autodiscovery");
+				return LODR_FAIL;
+			}
+			else if(r == 0 || !newuri)
+			{
+				lod_set_error_(context, "failed to discover link to RDF representation from HTML document\n");
+				return LODR_FAIL;
+			}
+			free(response->target);
+			response->target = newuri;
+			return LODR_FOLLOW_LINK;
+		}		
+	}
+	if(!response->type ||
+	   !strcmp(response->type, "text/plain") ||
+	   !strcmp(response->type, "application/octet-stream") ||
+	   !strcmp(response->type, "application/x-unknown"))
+	{
+		if((r = lod_sniff_(context, response)))
+		{
+			lod_set_error_(context, "failed to determine serialisation (via content sniffing)");
+			return LODR_FAIL;
+		}
+	}
+	if(!response->uri)
+	{
+		lod_set_error_(context, "no document URI has been set; cannot parse payload\n");
+		return LODR_FAIL;
+	}
+	parser = librdf_new_parser(world, NULL, response->type, NULL);
+	if(!parser)
+	{
+		lod_set_error_(context, "failed to create RDF parser");
+		return LODR_FAIL;
+	}
+	free(context->document);
+	context->document = response->uri;
+	response->uri = NULL;
+	r = 0;
+	baseuri = librdf_new_uri(world, (const unsigned char *) context->document);
+	if(!baseuri)
+	{	
+		lod_set_error_(context, "failed to create RDF URI");
+		r = 1;
+	}
+	if(!r)
+	{
+		r = librdf_parser_parse_counted_string_into_model(parser, (unsigned char *) response->buf, response->buflen, baseuri, model);
+		if(context->error)
+		{
+			r = 1;
+		}
+	}
+	if(baseuri)
+	{
+		librdf_free_uri(baseuri);
+	}
+	if(parser)
+	{
+		librdf_free_parser(parser);
+	}
+	if(r)
+	{
+		return LODR_FAIL;
+	}
+	return LODR_COMPLETE;
 }
