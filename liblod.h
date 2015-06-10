@@ -1,6 +1,6 @@
 /* Author: Mo McRoberts <mo.mcroberts@bbc.co.uk>
  *
- * Copyright (c) 2014 BBC
+ * Copyright (c) 2014-2015 BBC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -23,6 +23,13 @@
 
 typedef struct lod_context_struct LODCONTEXT;
 typedef struct lod_instance_struct LODINSTANCE;
+typedef struct lod_response_struct LODRESPONSE;
+
+/* A callback which can be supplied to perform a low-level URI fetch in
+ * place of the default implementation (for example, to modify the cURL
+ * request on a per-resource basis, or to use something else entirely).
+ */
+typedef int (*LODFETCHURI)(LODCONTEXT *context, const char *uri, LODRESPONSE *response);
 
 /* Create a new LOD context */
 LODCONTEXT *lod_create(void);
@@ -154,4 +161,48 @@ int lod_instance_exists(LODINSTANCE *instance);
  */
 LODINSTANCE *lod_instance_primarytopic(LODINSTANCE *instance);
 
+/* Create a new response object for population */
+LODRESPONSE *lod_response_create(void);
+
+/* Reset a response object ready for reuse.
+ * Note that this may avoid freeing the internal payload buffer to allow
+ * its allocated space to be re-used for the following request.
+  */
+int lod_response_reset(LODRESPONSE *resp);
+
+/* Destroy a response object */
+int lod_response_destroy(LODRESPONSE *resp);
+
+/* Set the HTTP status code in a response */
+int lod_response_set_status(LODRESPONSE *resp, long status);
+
+/* Set the error message in a response */
+int lod_response_set_error(LODRESPONSE *resp, const char *errmsg);
+
+/* Set the effective URI of a request in a response */
+int lod_response_set_uri(LODRESPONSE *resp, const char *uri);
+
+/* Set the redirect target URI of a request in a response */
+int lod_response_set_target(LODRESPONSE *resp, const char *uri);
+
+/* Set the MIME type of a payload in a response */
+int lod_response_set_type(LODRESPONSE *resp, const char *type);
+
+/* Assign the payload of a response
+ * NOTE: The payload must be allocated with malloc(), realloc() or calloc()
+ * The heap block will be owned by the response and can be freed at any
+ * time by liblod once set.
+ */
+int lod_response_set_payload(LODRESPONSE *resp, char *payload, size_t length);
+
+/* Assign the payload of a response by duplicating a buffer */
+int lod_response_set_payload_copy(LODRESPONSE *resp, const char *payload, size_t length);
+
+/* Append a byte sequence to the payload of a response */
+int lod_response_append_payload(LODRESPONSE *resp, const char *bytes, size_t length);
+
+/* Reset the payload of a response */
+int lod_response_reset_payload(LODRESPONSE *resp);
+
 #endif /*!LIBLOD_H_*/
+

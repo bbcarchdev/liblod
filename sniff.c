@@ -1,6 +1,6 @@
 /* Author: Mo McRoberts <mo.mcroberts@bbc.co.uk>
  *
- * Copyright (c) 2014 BBC
+ * Copyright (c) 2014-2015 BBC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,14 +27,14 @@
  * away.
  */
 int
-lod_sniff_(LODCONTEXT *context, char **type)
+lod_sniff_(LODCONTEXT *context, LODRESPONSE *response)
 {
 	const char *t;
 	char *p;
 	size_t len;
 
-	t = context->buf;
-	len = context->buflen;
+	t = response->buf;
+	len = response->buflen;
 	while(len && *t && isspace(*t))
 	{
 		len--;
@@ -61,8 +61,8 @@ lod_sniff_(LODCONTEXT *context, char **type)
 			lod_set_error_(context, strerror(errno));
 			return -1;
 		}
-		free(*type);
-		*type = p;
+		free(response->type);
+		response->type = p;
 		return 0;
 	}
 	if(!strncmp(t, "@base", 5) ||
@@ -75,8 +75,8 @@ lod_sniff_(LODCONTEXT *context, char **type)
 			lod_set_error_(context, strerror(errno));
 			return -1;
 		}
-		free(*type);
-		*type = p;
+		free(response->type);
+		response->type = p;
 		return 0;
 	}
 	/* No match */

@@ -25,7 +25,7 @@ static void lod_html_xml_generic_error_(void * ctx, const char * msg, ...);
 static void lod_html_xml_structured_error_(void *userData, xmlErrorPtr error);
 
 int
-lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl)
+lod_html_discover_(LODCONTEXT *context, LODRESPONSE *response, const char *url, char **newurl)
 {
 	librdf_world *world;
 	htmlParserCtxtPtr ctx;
@@ -57,7 +57,7 @@ lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl)
 	}
 	xmlSetGenericErrorFunc(ctx, lod_html_xml_generic_error_);
 	xmlSetStructuredErrorFunc(ctx, lod_html_xml_structured_error_);
-	doc = htmlCtxtReadMemory(ctx, context->buf, context->buflen, url, NULL, 0);
+	doc = htmlCtxtReadMemory(ctx, response->buf, response->buflen, url, NULL, 0);
 	if(!doc)
 	{
 		lod_set_error_(context, "failed to parse HTML document");

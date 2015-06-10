@@ -1,6 +1,6 @@
 ## Author: Mo McRoberts <mo.mcroberts@bbc.co.uk>
 ##
-## Copyright (c) 2014 BBC
+## Copyright (c) 2014-2015 BBC
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ bin_PROGRAMS = lod-util
 noinst_PROGRAMS = example-1
 
 liblod_la_SOURCES = p_liblod.h \
-	context.c instance.c resolve.c fetch.c sniff.c html.c
+	context.c instance.c resolve.c fetch.c sniff.c html.c response.c
 
 liblod_la_LIBADD = @LIBCURL_LOCAL_LIBS@ @LIBCURL_LIBS@ \
 	@LIBXML2_LOCAL_LIBS@ @LIBXML2_LIBS@ \

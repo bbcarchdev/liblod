@@ -40,9 +40,6 @@ struct lod_context_struct
 	librdf_model *model;
 	CURL *ch;
 	struct curl_slist *headers;
-	char *buf;
-	size_t bufsize;
-	size_t buflen;
 	char *subject;
 	char *document;
 	long status;
@@ -52,6 +49,7 @@ struct lod_context_struct
 	char **subjects;	
 	int nsubjects;
 	char *accept;
+	LODFETCHURI fetch_uri;
 	int verbose:1;
 	int world_alloc:1;
 	int storage_alloc:1;
@@ -66,12 +64,33 @@ struct lod_instance_struct
 	librdf_node *subject;
 };
 
+struct lod_response_struct
+{
+	/* HTTP status, or zero for a low-level error */
+	long status;
+	/* Error state, if any */
+	char *errmsg;
+	/* Payload */
+	char *buf;
+	size_t bufsize;
+	size_t buflen;
+	/* The 'effective URI' */
+	char *uri;
+	/* The redirect target URI */
+	char *target;
+	/* The payload MIME type */
+	char *type;
+	/* Response headers, in RFC822/HTTP format */
+	char **headers;
+	size_t nheaders;
+};
+
 int lod_reset_(LODCONTEXT *context);
 int lod_set_error_(LODCONTEXT *context, const char *msg);
 int lod_fetch_(LODCONTEXT *context);
-int lod_html_discover_(LODCONTEXT *context, const char *url, char **newurl);
+int lod_html_discover_(LODCONTEXT *context, LODRESPONSE *response, const char *url, char **newurl);
 int lod_push_subject_(LODCONTEXT *context, char *uri);
-int lod_sniff_(LODCONTEXT *context, char **type);
+int lod_sniff_(LODCONTEXT *context, LODRESPONSE *response);
 
 LODINSTANCE *lod_instance_create_(LODCONTEXT *context, librdf_statement *query, librdf_node *subject);
 

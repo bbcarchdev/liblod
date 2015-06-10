@@ -1,6 +1,6 @@
 /* Author: Mo McRoberts <mo.mcroberts@bbc.co.uk>
  *
- * Copyright (c) 2014 BBC
+ * Copyright (c) 2014-2015 BBC
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -21,25 +21,22 @@
 
 #include "p_liblod.h"
 
-#define BUFSIZE                         512
-#define BUFMAX                          (256 * 1024 * 1024)
-
+static int lod_fetch_curl_(LODCONTEXT *context, const char *uri, LODRESPONSE *response);
 static size_t lod_fetch_write_(char *ptr, size_t size, size_t nmemb, void *userdata);
 
 /* Unconditionally fetch some LOD and parse it into the existing model */
 int
 lod_fetch_(LODCONTEXT *context)
 {
+	LODRESPONSE *response;
 	librdf_world *world;
 	librdf_model *model;
 	librdf_uri *baseuri;
 	librdf_parser *parser;
-	CURL *ch;
 	CURLcode e;
 	int r, count, followed_link;
-	long code;
-	const char *base, *uri, *fragment;
-	char *t, *p, *type, *newuri, *tempuri, errbuf[64];
+	const char *uri, *fragment;
+	char *t, *newuri, *tempuri, errbuf[64];
 	size_t fraglen;
 
 	tempuri = NULL;
@@ -72,128 +69,37 @@ lod_fetch_(LODCONTEXT *context)
 	{
 		return -1;
 	}
-	ch = lod_curl(context);
-	if(!ch)
+	response = lod_response_create();
+	if(!response)
 	{
+		lod_set_error_(context, "failed to create response object");
 		return -1;
 	}
-	curl_easy_setopt(ch, CURLOPT_WRITEDATA, (void *) context);
-	curl_easy_setopt(ch, CURLOPT_WRITEFUNCTION, lod_fetch_write_);
-	curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 0);
 	uri = context->subjects[0];
-	type = NULL;
 	for(count = 0; count < context->max_redirects; count++)
 	{
-		curl_easy_setopt(ch, CURLOPT_URL, uri);
-		free(type);
-		type = NULL;
-		free(context->buf);
-		context->buf = NULL;
-		context->bufsize = 0;
-		context->buflen = 0;
-		e = curl_easy_perform(ch);
-		if(e)
+		lod_response_reset(response);
+		r = lod_fetch_curl_(context, uri, response);
+		if(r || response->status <= 0 || response->errmsg)
 		{
-			if(!context->error)
+			if(response->errmsg)
 			{
-				lod_set_error_(context, curl_easy_strerror(e));
+				lod_set_error_(context, response->errmsg);
+			}
+			else
+			{
+				lod_set_error_(context, "an unknown error occurred while fetching the resource");
 			}
 			r = 1;
 			break;
 		}
-		if((e = curl_easy_getinfo(context->ch, CURLINFO_RESPONSE_CODE, &code)))
+		context->status = response->status;
+		if(response->target)
 		{
-			lod_set_error_(context, curl_easy_strerror(e));
-			r = 1;
-			break;
-		}
-		context->status = code;
-		if((e = curl_easy_getinfo(ch, CURLINFO_EFFECTIVE_URL, &base)))
-		{
-			lod_set_error_(context, curl_easy_strerror(e));
-			r = 1;
-			break;
-		}
-		p = strdup(base);
-		if(!p)
-		{
-			lod_set_error_(context, strerror(errno));
-			r = 1;
-			break;
-		}
-		t = strchr(p, '#');
-		if(t)
-		{
-			*t = 0;
-		}
-		free(context->document);
-		context->document = p;
-		p = NULL;
-		if(code >= 200 && code <= 299 && context->buf)
-		{
-			/* Success response */
-			if((e = curl_easy_getinfo(context->ch, CURLINFO_CONTENT_TYPE, &p) != CURLE_OK))
-			{
-				lod_set_error_(context, curl_easy_strerror(e));
-				r = 1;
-				break;
-			}
-			if(!(type = strdup(p)))
-			{
-				lod_set_error_(context, strerror(errno));
-				r = 1;
-				break;
-			}
-			t = strchr(type, ';');
-			/* XXX determine charset for passing to HTML parser */
-			if(t)
-			{
-				*t = 0;
-			}
-			if(!strcmp(type, "text/html") ||
-			   !strcmp(type, "application/xhtml+xml") ||
-			   !strcmp(type, "application/vnd.wap.xhtml+xml") ||
-			   !strcmp(type, "application/vnd.ctv.xhtml+xml") ||
-			   !strcmp(type, "application/vnd.hbbtv.xhtml+xml"))
-			{
-				free(type);
-				type = NULL;
-				/* Perform link autodiscovery if we haven't previously done
-				 * so.
-				 */
-				if(followed_link)
-				{
-					lod_set_error_(context, "a <link rel=\"alternate\"> has previously been followed in this resolution session; will not do so again");
-					r = 1;
-					break;
-				}
-				r = lod_html_discover_(context, uri, &newuri);
-				if(r < 0)
-				{
-					lod_set_error_(context, "failed to parse HTML for RDF autodiscovery");
-					break;
-				}
-				else if(r == 0)
-				{
-					/* Autodiscovery failed */
-					lod_set_error_(context, "failed to discover link to RDF representation from HTML document\n");
-					r = 1;
-					break;
-				}
-				r = 0;
-				lod_push_subject_(context, newuri);
-				uri = newuri;
-				followed_link = 1;
-				continue;
-			}
-			break;
-		}
-		if(code > 300 && code <= 399)
-		{
-			/* Redirect response */
+			/* Follow a redirect */
 			free(tempuri);
 			tempuri = NULL;
-			newuri = NULL;
+			newuri = response->target;
 			if((e = curl_easy_getinfo(context->ch, CURLINFO_REDIRECT_URL, &newuri)))
 			{
 				lod_set_error_(context, curl_easy_strerror(e));
@@ -209,7 +115,7 @@ lod_fetch_(LODCONTEXT *context)
 			}
 			strcpy(tempuri, newuri);
 			uri = tempuri;
-			if(code == 303)
+			if(response->status == 303)
 			{
 				/* In the case of a 303, the new URI is simply used
 				 * in the subsequent request -- we shouldn't ever push
@@ -230,12 +136,64 @@ lod_fetch_(LODCONTEXT *context)
 				}
 			}
 			lod_push_subject_(context, tempuri);
+			/* tempuri is now owned by context */
 			tempuri = NULL;
 			continue;
 		}
+		if(response->status >= 200 && response->status <= 299 && response->buf)
+		{			
+			if(!response->type)
+			{
+				lod_set_error_(context, "failed to process payload because no content type is available");
+				r = 1;
+				break;
+			}
+			t = strchr(response->type, ';');
+			/* XXX determine charset for passing to HTML parser */
+			if(t)
+			{
+				*t = 0;
+			}
+			if(!strcmp(response->type, "text/html") ||
+			   !strcmp(response->type, "application/xhtml+xml") ||
+			   !strcmp(response->type, "application/vnd.wap.xhtml+xml") ||
+			   !strcmp(response->type, "application/vnd.ctv.xhtml+xml") ||
+			   !strcmp(response->type, "application/vnd.hbbtv.xhtml+xml"))
+			{
+				/* Perform link autodiscovery if we haven't previously done
+				 * so.
+				 */
+				if(followed_link)
+				{
+					lod_set_error_(context, "a <link rel=\"alternate\"> has previously been followed in this resolution session; will not do so again");
+					r = 1;
+					break;
+				}
+				r = lod_html_discover_(context, response, uri, &newuri);
+				if(r < 0)
+				{
+					lod_set_error_(context, "failed to parse HTML for RDF autodiscovery");
+					break;
+				}
+				else if(r == 0)
+				{
+					/* Autodiscovery failed */
+					lod_set_error_(context, "failed to discover link to RDF representation from HTML document\n");
+					r = 1;
+					break;
+				}
+				r = 0;
+				/* tempuri is now owned by context */
+				lod_push_subject_(context, newuri);
+				uri = newuri;
+				followed_link = 1;
+				continue;
+			}
+			break;			
+		}
 		/* Some other status code */
 		r = 1;
-		sprintf(errbuf, "HTTP status %ld", code);
+		sprintf(errbuf, "HTTP status %ld", response->status);
 		lod_set_error_(context, errbuf);
 		break;
 	}
@@ -246,11 +204,12 @@ lod_fetch_(LODCONTEXT *context)
 	}
 	if(!r)
 	{
-		if(!strcmp(type, "text/plain") ||
-		   !strcmp(type, "application/octet-stream") ||
-		   !strcmp(type, "application/x-unknown"))
+		if(!response->type ||
+		   !strcmp(response->type, "text/plain") ||
+		   !strcmp(response->type, "application/octet-stream") ||
+		   !strcmp(response->type, "application/x-unknown"))
 		{
-			if((r = lod_sniff_(context, &type)))
+			if((r = lod_sniff_(context, response)))
 			{
 				lod_set_error_(context, "failed to determine serialisation");
 			}
@@ -258,23 +217,36 @@ lod_fetch_(LODCONTEXT *context)
 	}
 	if(!r)
 	{
-		parser = librdf_new_parser(world, NULL, type, NULL);
+		parser = librdf_new_parser(world, NULL, response->type, NULL);
 		if(!parser)
 		{
+			lod_set_error_(context, "failed to create RDF parser");
 			r = 1;
 		}
 	}
 	if(!r)
 	{
+		if(!response->uri)
+		{
+			lod_set_error_(context, "no document URI has been set; cannot parse payload\n");
+			r = 1;
+		}
+	}
+	if(!r)
+	{
+		free(context->document);
+		context->document = response->uri;
+		response->uri = NULL;
 		baseuri = librdf_new_uri(world, (const unsigned char *) context->document);
 		if(!baseuri)
 		{
+			lod_set_error_(context, "failed to create RDF URI");
 			r = 1;
 		}
 	}
 	if(!r)
 	{
-		r = librdf_parser_parse_counted_string_into_model(parser, (unsigned char *) context->buf, context->buflen, baseuri, model);
+		r = librdf_parser_parse_counted_string_into_model(parser, (unsigned char *) response->buf, response->buflen, baseuri, model);
 		if(context->error)
 		{
 			r = 1;
@@ -289,11 +261,7 @@ lod_fetch_(LODCONTEXT *context)
 		librdf_free_parser(parser);
 	}
 	free(tempuri);
-	free(type);
-	free(context->buf);
-	context->buf = NULL;
-	context->bufsize = 0;
-	context->buflen = 0;	
+	lod_response_destroy(response);
 	if(r)
 	{
 		context->error = 1;
@@ -302,34 +270,83 @@ lod_fetch_(LODCONTEXT *context)
 	return 0;
 }
 
+/* The default implementation of a LODFETCHURI callback using cURL */
+static int
+lod_fetch_curl_(LODCONTEXT *context, const char *uri, LODRESPONSE *response)
+{
+	CURL *ch;
+	CURLcode e;
+	long code;
+	char *str;
+
+	ch = lod_curl(context);
+	if(!ch)
+	{
+		return -1;
+	}
+	curl_easy_setopt(ch, CURLOPT_WRITEDATA, (void *) response);
+	curl_easy_setopt(ch, CURLOPT_WRITEFUNCTION, lod_fetch_write_);
+	curl_easy_setopt(ch, CURLOPT_FOLLOWLOCATION, 0);
+	curl_easy_setopt(ch, CURLOPT_URL, uri);
+	e = curl_easy_perform(ch);
+	if(e)
+	{
+		lod_response_set_error(response, curl_easy_strerror(e));
+		return -1;
+	}
+	if((e = curl_easy_getinfo(context->ch, CURLINFO_RESPONSE_CODE, &code)))
+	{
+		lod_response_set_error(response, curl_easy_strerror(e));
+		return -1;
+	}
+	if(lod_response_set_status(response, code))
+	{
+		return -1;
+	}
+	if((e = curl_easy_getinfo(ch, CURLINFO_EFFECTIVE_URL, &str)))
+	{
+		lod_response_set_error(response, curl_easy_strerror(e));
+		return -1;
+	}
+	if(lod_response_set_uri(response, str))
+	{
+		return -1;
+	}
+	if((e = curl_easy_getinfo(ch, CURLINFO_CONTENT_TYPE, &str)))
+	{
+		lod_response_set_error(response, curl_easy_strerror(e));
+		return -1;
+	}
+	if(lod_response_set_type(response, str))
+	{
+		return -1;
+	}
+	if(code > 300 && code <= 399)
+	{
+		if((e = curl_easy_getinfo(ch, CURLINFO_REDIRECT_URL, &str)))
+		{
+			lod_response_set_error(response, curl_easy_strerror(e));
+			return -1;
+		}
+		if(lod_response_set_target(response, str))
+		{
+			return -1;
+		}
+	}
+	return 0;
+}
+
 /* Invoked by libcurl when payload data is received */
 static size_t
 lod_fetch_write_(char *ptr, size_t size, size_t nmemb, void *userdata)
 {
-	LODCONTEXT *context;
-	size_t toalloc;
-	char *p;
+	LODRESPONSE *response;
 
-	context = (LODCONTEXT *) userdata;
+	response = (LODRESPONSE *) userdata;
 	size *= nmemb;
-	if(context->buflen + size >= context->bufsize)
+	if(lod_response_append_payload(response, ptr, size))
 	{
-		toalloc = ((context->bufsize + size) / BUFSIZE + 1) * BUFSIZE;
-		if(toalloc > BUFMAX)
-		{
-			lod_set_error_(context, strerror(ENOMEM));
-			return 0;
-		}
-		p = (char *) realloc(context->buf, toalloc);
-		if(!p)
-		{
-			lod_set_error_(context, strerror(errno));
-			return 0;
-		}
-		context->bufsize = toalloc;
-		context->buf = p;
+		return 0;
 	}
-	memcpy(&(context->buf[context->buflen]), ptr, size);
-	context->buflen += size;
 	return size;
 }

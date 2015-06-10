@@ -445,10 +445,6 @@ lod_reset_(LODCONTEXT *context)
 	context->document = NULL;
 	free(context->subject);
 	context->subject = NULL;
-	free(context->buf);
-	context->buf = NULL;
-	context->buflen = 0;
-	context->bufsize = 0;
 	return 0;
 }
 
