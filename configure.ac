@@ -40,6 +40,9 @@ BT_REQUIRE_LIBURI_INCLUDED
 use_docbook_html5=yes
 BT_BUILD_DOCS
 
+twinehtdocdir='${docdir}'
+AC_SUBST([twinehtdocdir])
+
 BT_DEFINE_PREFIX
 
 AC_CONFIG_FILES([
