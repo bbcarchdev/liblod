@@ -18,7 +18,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 LIBS =
 
-DIST_SUBDIRS = m4 liburi docs
+DIST_SUBDIRS = m4 docs
 
 SUBDIRS = @subdirs@ docs
 
