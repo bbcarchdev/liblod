@@ -2,7 +2,7 @@
 ##
 ##  Author: Mo McRoberts
 ##
-##  Copyright (c) 2014 BBC
+##  Copyright (c) 2014-2015 BBC
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -40,8 +40,12 @@ BT_REQUIRE_LIBURI_INCLUDED
 use_docbook_html5=yes
 BT_BUILD_DOCS
 
-twinehtdocdir='${docdir}'
-AC_SUBST([twinehtdocdir])
+liblodhtdocdir='${docdir}'
+AC_SUBST([liblodhtdocdir])
+
+# If build_docs is 'no', then XSLT2MAN will be 'true', and this will be a
+# no-op at build time, but still install the pre-built manpages.
+AM_CONDITIONAL([BUILD_MANPAGES],[true])
 
 BT_DEFINE_PREFIX
 
