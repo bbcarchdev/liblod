@@ -1,0 +1,60 @@
+'\" t
+.\"     Title: lod_instance_destroy
+.\"    Author: Mo McRoberts
+.\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 07/07/2015
+.\"    Manual: Library functions
+.\"    Source: Linked Open Data client
+.\"  Language: English
+.\"
+.TH "LOD_INSTANCE_DESTROY" "3" "07/07/2015" "Linked Open Data client" "Library functions"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+lod_instance_destroy \- Destroy a liblod instance
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <liblod\&.h>
+.fi
+.ft
+.HP \w'int\ lod_instance_destroy('u
+.BI "int lod_instance_destroy(LODINSTANCE\ *" "instance" ");"
+.SH "DESCRIPTION"
+.PP
+
+\fBlod_instance\fR
+frees the resources allocated for a
+liblod
+instance previously created by
+\fBlod_resolve\fR
+or
+\fBlod_instance_primarytopic\fR\&.
+.PP
+Once an instance has been destroyed, any
+librdf
+streams or URIs associated with the context will become invalidated\&.
+.SH "SEE ALSO"
+.PP
+
+\m[blue]\fB\fBliblod\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_resolve\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_instance_primarytopic\fR(3)\fR\m[]\&.
