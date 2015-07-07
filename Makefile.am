@@ -18,9 +18,9 @@ ACLOCAL_AMFLAGS = -I m4
 
 LIBS =
 
-DIST_SUBDIRS = m4 docs
+DIST_SUBDIRS = m4 docs t
 
-SUBDIRS = @subdirs@ docs
+SUBDIRS = @subdirs@ docs t
 
 EXTRA_DIST = LICENSE-2.0 README.md *.xml liblod.pc.in
 

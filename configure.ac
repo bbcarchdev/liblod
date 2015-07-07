@@ -53,6 +53,7 @@ AC_CONFIG_FILES([
 Makefile
 m4/Makefile
 docs/Makefile
+t/Makefile
 liblod.pc
 ])
 
