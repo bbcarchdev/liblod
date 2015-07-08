@@ -1,0 +1,66 @@
+'\" t
+.\"     Title: lod_create
+.\"    Author: Mo McRoberts
+.\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
+.\"      Date: 07/07/2015
+.\"    Manual: Library functions
+.\"    Source: Linked Open Data client
+.\"  Language: English
+.\"
+.TH "LOD_CREATE" "3" "07/07/2015" "Linked Open Data client" "Library functions"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+lod_create \- Create a new liblod context
+.SH "SYNOPSIS"
+.sp
+.ft B
+.nf
+#include <liblod\&.h>
+.fi
+.ft
+.HP \w'LODCONTEXT\ *lod_create('u
+.BI "LODCONTEXT *lod_create(void);"
+.SH "DESCRIPTION"
+.PP
+
+\fBlod_create\fR
+allocates a new
+liblod
+context\&. Typically, a context is created for a single discovery session, with its own
+\fBlibrdf_model\fR
+and
+libcurl
+handle\&. One or more URIs can be resolved (retrieving the data related to them from Linked Open Data web servers and populating the model), the model interrogated, and the context eventually destroyed to free the resources associated with it\&.
+.SH "NOTES"
+.PP
+If your application needs to call
+\fBcurl_global_init\fR
+with any value other than
+\fBCURL_GLOBAL_ALL\fR, you should invoke it prior to calling
+\fBlod_create\fR
+for the first time\&.
+.SH "SEE ALSO"
+.PP
+
+\m[blue]\fB\fBliblod\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_destroy\fR(3)\fR\m[],
+\m[blue]\fB\fBlod_resolve\fR(3)\fR\m[],
+\m[blue]\fB\fBcurl_global_init\fR(3)\fR\m[]\&.

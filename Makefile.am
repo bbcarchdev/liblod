@@ -1,6 +1,6 @@
 ## Author: Mo McRoberts <mo.mcroberts@bbc.co.uk>
 ##
-## Copyright (c) 2014 BBC
+## Copyright (c) 2014-2015 BBC
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -15,6 +15,26 @@
 ##  limitations under the License.
 
 EXTRA_DIST = *.xml
+
+if BUILD_MANPAGES
+
+notrans_dist_man3_MANS = liblod.man \
+	lod_create.man lod_destroy.man \
+	lod_resolve.man lod_locate.man lod_fetch.man \
+	lod_world.man lod_storage.man lod_model.man lod_curl.man \
+	lod_set_world.man lod_set_storage.man lod_set_model.man \
+	lod_set_curl.man lod_error.man lod_errmsg.man \
+	lod_instance_destroy.man lod_instance_exists.man \
+	lod_instance_stream.man lod_instance_uri.man \
+	lod_instance_primarytopic.man
+							
+SUFFIXES = .3.xml .man
+							
+.3.xml.man:
+	$(XML2MAN) $<
+	mv $*.3 $@
+
+endif
 
 dist_liblodhtdoc_DATA = local.css index.html \
 	lod_create.3.html lod_destroy.3.html \
