@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: liblod
+Description: Linked Open data (LOD) client library
+Requires: liburi, redland
+Version: @PACKAGE_VERSION@
+Libs: -L${libdir} -llod @LIBURI_INSTALLED_LIBS@ @LIBRDF_INSTALLED_LIBS@ @LIBXML2_INSTALLED_LIBS@ @LIBCURL_INSTALLED_LIBS@
+Cflags: -I${includedir} @LIBURI_CPPFLAGS@ @LIBRDF_CPPFLAGS@ @LIBXML2_CPPFLAGS@ @LIBCURL_CPPFLAGS@
+
