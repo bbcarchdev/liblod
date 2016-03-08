@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: lod_resolve
 .\"    Author: Mo McRoberts
-.\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 07/07/2015
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 03/08/2016
 .\"    Manual: Library functions
 .\"    Source: Linked Open Data client
 .\"  Language: English
 .\"
-.TH "LOD_RESOLVE" "3" "07/07/2015" "Linked Open Data client" "Library functions"
+.TH "LOD_RESOLVE" "3" "03/08/2016" "Linked Open Data client" "Library functions"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -40,7 +40,6 @@ lod_resolve \- Resolve a Linked Open Data URI
 .BI "LODINSTANCE *lod_resolve(LODCONTEXT\ *" "context" ", const\ char\ *" "uri" ");"
 .SH "DESCRIPTION"
 .PP
-
 \fBlod_resolve\fR
 attempts to
 resolve
@@ -122,7 +121,6 @@ lod_destroy(ctx);
 .\}
 .SH "SEE ALSO"
 .PP
-
 \m[blue]\fB\fBliblod\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_create\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_error\fR(3)\fR\m[],

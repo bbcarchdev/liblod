@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: lod_fetch
 .\"    Author: Mo McRoberts
-.\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 07/07/2015
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 03/08/2016
 .\"    Manual: Library functions
 .\"    Source: Linked Open Data client
 .\"  Language: English
 .\"
-.TH "LOD_FETCH" "3" "07/07/2015" "Linked Open Data client" "Library functions"
+.TH "LOD_FETCH" "3" "03/08/2016" "Linked Open Data client" "Library functions"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -40,7 +40,6 @@ lod_fetch \- Resolve a Linked Open Data URI
 .BI "LODINSTANCE *lod_fetch(LODCONTEXT\ *" "context" ", const\ char\ *" "uri" ");"
 .SH "DESCRIPTION"
 .PP
-
 \fBlod_fetch\fR
 attempts to
 resolve
@@ -77,7 +76,6 @@ to determine whether an error occurred, or whether the subject does not exist in
 to obtain a description of the error condition\&.
 .SH "SEE ALSO"
 .PP
-
 \m[blue]\fB\fBliblod\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_locate\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_resolve\fR(3)\fR\m[],

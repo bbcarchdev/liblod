@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: lod_curl
 .\"    Author: Mo McRoberts
-.\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 07/07/2015
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 03/08/2016
 .\"    Manual: Library functions
 .\"    Source: Linked Open Data client
 .\"  Language: English
 .\"
-.TH "LOD_CURL" "3" "07/07/2015" "Linked Open Data client" "Library functions"
+.TH "LOD_CURL" "3" "03/08/2016" "Linked Open Data client" "Library functions"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -40,7 +40,6 @@ lod_curl \- Obtain a libcurl handle associated with a context
 .BI "CURL *lod_curl(LODCONTEXT\ *" "context" ");"
 .SH "DESCRIPTION"
 .PP
-
 \fBlod_curl\fR
 obtains the
 \fBCURL\fR
@@ -63,7 +62,6 @@ returns
 can be used to obtain a description of the error condition\&.
 .SH "SEE ALSO"
 .PP
-
 \m[blue]\fB\fBliblod\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_world\fR(3)\fR\m[],
 \m[blue]\fB\fBlod_storage\fR(3)\fR\m[],

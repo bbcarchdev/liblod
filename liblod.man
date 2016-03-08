@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: liblod
 .\"    Author: Mo McRoberts
-.\" Generator: DocBook XSL-NS Stylesheets v1.76.1 <http://docbook.sf.net/>
-.\"      Date: 07/07/2015
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 03/08/2016
 .\"    Manual: Library functions
 .\"    Source: Linked Open Data client
 .\"  Language: English
 .\"
-.TH "LIBLOD" "3" "07/07/2015" "Linked Open Data client" "Library functions"
+.TH "LIBLOD" "3" "03/08/2016" "Linked Open Data client" "Library functions"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -42,12 +42,10 @@ liblod \- Linked Open Data client library
 .PP
 Linked Open Data is a method of publishing machine\-readable structured data on the web, using resolveable URIs as the means of identifying the entities described and referred to by the data\&.
 .PP
-
 liblod
 is a library for consuming published Linked Open Data, providing a simple interface for resolving a URI and interrogating the data which is retrieved\&.
 .SH "INTERFACES"
 .PP
-
 liblod
 provides the public interfaces listed below\&.
 .\" line length increase to cope w/ tbl weirdness
@@ -191,7 +189,6 @@ T}
 .sp
 .SH "DEPENDENCIES"
 .PP
-
 liblod
 depends upon
 libcurl,
@@ -205,7 +202,6 @@ liburi
 is included in the source distribution\&.
 .SH "SEE ALSO"
 .PP
-
 \m[blue]\fB\fBlibcurl\fR(3)\fR\m[],
 \m[blue]\fB\fBlibrdf\fR(3)\fR\m[],
 \m[blue]\fB\fBlibxml2\fR(3)\fR\m[]\&.
