@@ -1,2 +1,4 @@
+*.log
+*.trs
 /simple1
 /simple2
