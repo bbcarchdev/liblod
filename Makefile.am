@@ -1,6 +1,6 @@
 ## Author: Mo McRoberts <mo.mcroberts@bbc.co.uk>
 ##
-## Copyright (c) 2014-2015 BBC
+## Copyright (c) 2014-2016 BBC
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ ACLOCAL_AMFLAGS = -I m4
 
 LIBS =
 
-DIST_SUBDIRS = m4 docs t
+DIST_SUBDIRS = m4 docs t libedit
 
 SUBDIRS = @subdirs@ docs t
 
@@ -50,7 +50,8 @@ lod_util_SOURCES = lod-util.c
 
 lod_util_LDADD = liblod.la \
 	@LIBRDF_LOCAL_LIBS@ @LIBRDF_LIBS@ \
-	@LIBCURL_LOCAL_LIBS@ @LIBCURL_LIBS@
+	@LIBCURL_LOCAL_LIBS@ @LIBCURL_LIBS@ \
+	@LIBEDIT_LOCAL_LIBS@ @LIBEDIT_LIBS@
 
 example_1_SOURCES = example-1.c
 

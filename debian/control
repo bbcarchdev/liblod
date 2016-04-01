@@ -2,7 +2,7 @@ Source: liblod
 Section: web
 Priority: extra
 Maintainer: Mo McRoberts <mo.mcroberts@bbc.co.uk>
-Build-Depends: debhelper (>= 8.0.0), autoconf, automake, libtool, liburi-dev, libxml2-dev, libcurl4-gnutls-dev, librdf0-dev, libltdl-dev
+Build-Depends: debhelper (>= 8.0.0), autoconf, automake, libtool, liburi-dev, libxml2-dev, libcurl4-gnutls-dev, librdf0-dev, libltdl-dev, libedit-dev
 Standards-Version: 3.9.3
 Homepage: https://bbcarchdev.github.io/res/code
 Vcs-Browser: https://github.com/bbcarchdev/liblod
@@ -28,7 +28,7 @@ Description: Linked Open Data (LOD) client library (development files)
 
 Package: lod-utils
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}, liblod (= ${binary:Version})
+Depends: ${misc:Depends}, ${shlibs:Depends}, liblod (= ${binary:Version}), libedit2
 Description: Linekd Open Data (LOD) client library (command-line utilities)
   liblod is a client library for consuming Linked Open Data published on
   web servers. It's a thin wrapper around librdf, libcurl, and libxml2.

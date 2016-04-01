@@ -1,8 +1,8 @@
 ##  liblod: A Linked Open Data client library
 ##
-##  Author: Mo McRoberts
+##  Author: Mo McRoberts <mo.mcroberts@bbc.co.uk>
 ##
-##  Copyright (c) 2014-2015 BBC
+##  Copyright (c) 2014-2016 BBC
 ##
 ##  Licensed under the Apache License, Version 2.0 (the "License");
 ##  you may not use this file except in compliance with the License.
@@ -35,6 +35,13 @@ BT_REQUIRE_PTHREAD
 BT_REQUIRE_LIBXML2
 BT_REQUIRE_LIBCURL
 BT_REQUIRE_LIBRDF
+
+dnl libedit is used only by isparql, don't include it in $LIBS
+BT_REQUIRE_LIBEDIT_INCLUDED([
+AM_CPPFLAGS="$AM_CPPFLAGS $LIBEDIT_CPPFLAGS"
+AM_LDFLAGS="$AM_LDFLAGS $LIBEDIT_LDFLAGS"
+])
+
 BT_REQUIRE_LIBURI_INCLUDED
 
 use_docbook_html5=yes
