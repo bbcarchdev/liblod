@@ -25,6 +25,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <curl/curl.h>
+#include <histedit.h>
 
 #include "liblod.h"
 
@@ -42,12 +43,18 @@ static int resolve_uri(const char *uri, int mode);
 static int process_command(const char *command);
 static librdf_serializer *get_serializer(void);
 static int perform_query(const char *query);
+static char *prompt(EditLine *el);
 
 int
 main(int argc, char **argv)
 {
-	int index;
-	char buf[1024], *t;
+	int index, num;
+	const char *buf;
+	char *linebuf, *p, *t;
+	EditLine *el;
+	History *hist;
+	HistEvent ev;
+	size_t len, lblen;
 
 	mode = LOD_FETCH_ABSENT;
 	if(curl_global_init(CURL_GLOBAL_ALL))
@@ -56,8 +63,18 @@ main(int argc, char **argv)
 		return 1;
 	}
 	index = 1;
+	linebuf = NULL;
+	lblen = 0;
 	printf("%s: a test harness for liblod\n", argv[0]);
-	printf("Enter a URI to resolve, or .COMMAND (type '.help' for a list of commands)\n\n");	
+	printf("Enter a URI to resolve, or .COMMAND (type '.help' for a list of commands)\n\n");
+	hist = history_init();
+	history(hist, &ev, H_SETSIZE, 100);
+	el = el_init(argv[0], stdin, stdout, stderr);
+	el_set(el, EL_EDITOR, "emacs");
+	el_set(el, EL_SIGNAL, 1);
+	el_set(el, EL_PROMPT, prompt);
+	el_set(el, EL_HIST, history, hist);
+	el_source(el, NULL);	
 	while(1)
 	{
 		/* While there are URIs specified on the command-line, process them */
@@ -68,32 +85,43 @@ main(int argc, char **argv)
 		}
 		else
 		{
-			fputs("> ", stdout);
-			fflush(stdout);
-			if(!fgets(buf, sizeof(buf), stdin))
+			buf = el_gets(el, &num);
+			if(!buf || !num)
 			{
 				break;
 			}
-			t = strchr(buf, 0);
+			while(*buf && isspace(*buf))
+			{
+				buf++;
+			}
+			if(!*buf)
+			{
+				continue;
+			}
+			len = strlen(buf);
+			if(len > lblen)
+			{			   
+				p = (char *) realloc(linebuf, len + 1);
+				if(!p)
+				{
+					fprintf(stderr, "%s: failed to resize line buffer: %s\n", argv[0], strerror(errno));
+					exit(EXIT_FAILURE);
+				}
+				linebuf = p;
+				lblen = len;
+			}
+			strcpy(linebuf, buf);
+			t = strchr(linebuf, 0);
 			t--;
-			while(t >= buf && isspace(*t))
+			while(t >= linebuf && isspace(*t))
 			{
 				*t = 0;
 				t--;
 			}
-			t = buf;
-			while(*t && isspace(*t))
+			history(hist, &ev, H_ENTER, linebuf);
+			if(linebuf[0] == '.')
 			{
-				t++;
-			}
-			if(!*t)
-			{
-				continue;
-			}
-			if(*t == '.')
-			{				
-				t++;
-				if(process_command(t))
+				if(process_command(&(linebuf[1])))
 				{
 					break;
 				}
@@ -109,12 +137,15 @@ main(int argc, char **argv)
 				return 1;
 			}
 		}
-		resolve_uri(t, mode | flags);
+		resolve_uri(linebuf, mode | flags);
 	}
 	if(context)
 	{
 		lod_destroy(context);
 	}
+	history_end(hist);
+	el_end(el);
+	free(linebuf);
 	return 0;
 }
 
@@ -411,6 +442,14 @@ perform_query(const char *query)
 	librdf_free_query_results(res);
 	librdf_free_query(q);
 	return 0;
+}
+
+static char *
+prompt(EditLine *el)
+{
+	(void) el;
+
+	return "> ";
 }
 
 	
