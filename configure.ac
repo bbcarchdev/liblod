@@ -36,7 +36,7 @@ BT_REQUIRE_LIBXML2
 BT_REQUIRE_LIBCURL
 BT_REQUIRE_LIBRDF
 
-dnl libedit is used only by isparql, don't include it in $LIBS
+dnl libedit is used only by lod-util, don't include it in $LIBS
 BT_REQUIRE_LIBEDIT_INCLUDED([
 AM_CPPFLAGS="$AM_CPPFLAGS $LIBEDIT_CPPFLAGS"
 AM_LDFLAGS="$AM_LDFLAGS $LIBEDIT_LDFLAGS"
